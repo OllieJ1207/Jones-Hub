@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Jones Hub</title>
+  <link href="/other/utilityFiles/global.css" rel="stylesheet" type="text/css" />
+  <link href="/other/utilityFiles/pages.css" rel="stylesheet" type="text/css" />
+  <link href="/other/utilityFiles/notes.css" rel="stylesheet" type="text/css" />
+  <script type="module", src="script.js"></script>
+
+  <!-- To make Google Icons (below) filled, change 2nd to last 0 to 1 -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body style="background-color: #444; transition: background-color 0.5s ease-in-out;">
+
+  <style> body { height: 100vh; } </style>
+
+  <div class="V1GLOBAL_LoadingDiv">
+    <div class="V1GLOBAL_Loader"></div>
+  </div>
+
+
+
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+  <!-- NavBar /////////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+
+  <div class="navbar" id="navbar">
+    <p class="navbarTitle" id="navbarTitle" >HUB</p>
+    <div class="navbarButton active" page="homePage">
+      <i class="material-symbols-rounded icon" style="margin-right: 0px;">dashboard</i>
+      <p class="navbarButtonText" style="display: none;">Dashboard</p>
+    </div>
+    <div class="navbarButton" page="calenderPage">
+      <i class="material-symbols-rounded icon" style="margin-right: 0px;">calendar_month</i>
+      <p class="navbarButtonText" style="display: none;">Calender</p>
+    </div>
+    <div class="navbarButton" page="shoppingPage">
+      <i class="material-symbols-rounded icon" style="margin-right: 0px;">list_alt</i>
+      <p class="navbarButtonText" style="display: none;">Shopping</p>
+    </div>
+    <div class="navbarButton" page="notesPage">
+      <i class="material-symbols-rounded icon" style="margin-right: 0px;">notes</i>
+      <p class="navbarButtonText" style="display: none;">Notes</p>
+    </div>
+    <div class="navbarButton" style="margin-top: auto; margin-bottom: 10px" id="navbarButtonOpen" state="closed">
+      <i class="material-symbols-rounded icon" id="navbarButtonOpenIcon" style="margin-right: 0; transform: rotate(0deg); transition: transform 0.25s ease-in-out;">arrow_forward_ios</i>
+    </div>
+  </div>
+
+
+  
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+  <!-- Dashboard //////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+
+  <div class="page" id="homePage" style="justify-content: center;">
+    <p class="title" style="overflow: clip; text-overflow: ellipsis; height: 82px;">Welcome to the Jones Family Hub!</p>
+    <div class="sectionGroup" style="width: -webkit-fill-available; height: calc(50vh - 65px);">
+      <div class="section" style="width: 50%; height: 100%;"></div>
+      <div class="section" style="width: 50%; height: 100%;"></div>
+    </div>
+    <div class="sectionGroup" style="width: -webkit-fill-available; height: calc(50vh - 65px);">
+      <div class="section" style="width: 50%; height: 100%;"></div>
+      <div class="section" style="width: 50%; height: 100%;"></div>
+    </div>
+  </div>
+
+
+
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+  <!-- Calender ///////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+
+  <div class="page" id="calenderPage" style="opacity: 0; display: none; height: 100vh;">
+    <p class="title">Calender</p>
+    <div class="section" style="width: 100%; height: 100%;">
+      <div id="calendar-container" style="width:100%; max-width:1000px; height:100%; overflow:hidden;">
+        <iframe 
+          src="https://outlook.live.com/owa/calendar/00000000-0000-0000-0000-000000000000/83c2a146-fb2b-4e49-8943-bd4c40a56b10/cid-975FEA8F731EB2E6/index.html" 
+          style="width:100%; height:100%; border:none;" 
+          sandbox="allow-scripts allow-same-origin">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+  <!-- Shopping ///////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+
+  <div class="page" id="shoppingPage" style="opacity: 0; display: none;">
+    <p class="title">Shopping Lists</p>
+    <div class="section"></div>
+  </div>
+
+
+
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+  <!-- Notes //////////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+
+  <div class="page" id="notesPage" style="opacity: 0; display: none; flex-direction: row;">
+    <p class="title">Notes</p>
+    <div class="section" style="width: 100%;">
+      <p class="sectionTitle">Statistics</p>
+
+      <div>
+        <div class="sectionPill" id="notesPageTotalNotes"><b>Total Notes:</b> 0 notes</div>
+        <div class="sectionPillButton" id="notesPageCreateNoteButton" style="border: 2px solid #09f;">Create New Note</div>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  <div class="page" id="newNotesPage" style="opacity: 0; height: 100vh; display: none; flex-direction: row; overflow: hidden;" note_id="x">
+    <p class="title">New Note</p>
+    <div class="section" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+
+      <div>
+        <p class="sectionTitle" style="display: inline-block;">Statistics</p>
+        <p class="sectionTitle" id="newNotesPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
+        <div class="sectionPillButton" id="newNotesPageCancelNoteButton" style="border: 2px solid #cc0;">Cancel New Note</div>
+        <div class="sectionPillButton" id="newNotesPageConfirmNoteButton" style="border: 2px solid #0c0;">Create New Note</div>
+      </div>
+
+      <p class="notesTitle">Note Title:</p>
+      <textarea class="notesPara notesTextBox" id="newNotesPageTitleBox" type="text" value=""></textarea>
+
+      <p class="notesTitle">Note Description:</p>
+      <div style="flex-grow: 1; display: flex; flex-direction: column;">
+        <textarea class="notesPara notesTextBox" id="newNotesPageDescBox" type="text" value="" style="flex-grow: 1; height: 100%; overflow-y: auto;"></textarea>
+      </div>
+
+      <p class="notesTitle">Note Added By:</p>
+      <div style="display: flex; justify-content: space-around;">
+        <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #ff3d06; width: -webkit-fill-available; text-align: center;">Rick</div>
+        <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #f0f; width: -webkit-fill-available; text-align: center;">Anna</div>
+        <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #0f0; width: -webkit-fill-available; text-align: center;">Ollie</div>
+        <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #09f; width: -webkit-fill-available; text-align: center;">Harry</div>
+        <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #90f; width: -webkit-fill-available; text-align: center;">Charlotte</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page" id="editNotesPage" style="opacity: 0; height: 100vh; display: none; flex-direction: row; overflow: hidden;" note_id="x">
+    <p class="title">Edit Note</p>
+    <div class="section" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+
+      <div>
+        <p class="sectionTitle" style="display: inline-block;">Statistics</p>
+        <p class="sectionTitle" id="editNotesPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
+        <div class="sectionPillButton" id="editNotesPageDeleteNoteButton" style="border: 2px solid #c00;">Delete Note</div>
+        <div class="sectionPillButton" id="editNotesPageCancelNoteButton" style="border: 2px solid #cc0;">Cancel Edits</div>
+        <div class="sectionPillButton" id="editNotesPageConfirmNoteButton" style="border: 2px solid #0c0;">Confirm Edits</div>
+      </div>
+
+      <p class="notesTitle">Note Title:</p>
+      <textarea class="notesPara notesTextBox" id="editNotesPageTitleBox" type="text" value=""></textarea>
+      
+      <p class="notesTitle">Note Description:</p>
+      <div style="flex-grow: 1; display: flex; flex-direction: column;">
+        <textarea class="notesPara notesTextBox" id="editNotesPageDescBox" type="text" value="" style="flex-grow: 1; height: 100%; overflow-y: auto;"></textarea>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+  <!-- Scripts ////////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+
+  <script>
+    const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+    document.addEventListener("DOMContentLoaded", async function (event) {
+      await wait(1000);
+      document.querySelector('.V1GLOBAL_LoadingDiv').style.width = '0vw';
+    })
+  </script>
+  
+  
+
+</body>
+
+</html>
