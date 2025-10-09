@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getFirestore, doc, collection, setDoc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getFirestore, doc, collection, setDoc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, Timestamp, increment, deleteField } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOuvYnU3JEVwsFe1h17-JtLVkXjFYENkE",
@@ -98,7 +98,7 @@ async function load_page(page) {
         const data = doc.data();
         document.querySelector("#notesPageTotalNotes").innerHTML = `<b>Total Notes:</b> ${data["total_notes"]} notes`
       } else {
-        if (document.querySelector(".notesSection[note_id='" + doc.id + "']") == null) {
+        if (document.querySelector("#notesPage .notesSection[note_id='" + doc.id + "']") == null) {
           notes[doc.id] = doc.data();
         }
       }
@@ -114,10 +114,8 @@ async function load_page(page) {
       const added_time_timestamp = notes[key]["added_time"].toDate();
       const added_time_string = added_time_timestamp.toLocaleString('en-GB', options).split(', ');
 
-      note.innerHTML = `<p class="notesTitle">${notes[key]["title"]}</p>
-      <div class="notesButton" function="edit"><i class="material-symbols-rounded">edit_square</i></div>
-      <div class="notesPara notesClampedText">${notes[key]["note"]}</div>
-      <p class="notesSubInfo">Created by: <b>${notes[key]["added_by"]}</b> on <b>${added_time_string}</b></p>`
+      note.innerHTML = `<p class="notesTitle">${notes[key]}</p>
+      <div class="notesButton" function="edit"><i class="material-symbols-rounded">expand_circle_right</i></div>`
 
       document.getElementById("notesPage").appendChild(note);
 
@@ -137,6 +135,88 @@ async function load_page(page) {
       
     }
     
+  } else if (page == "shoppingPage") {
+    console.log("Test")
+    const notesDocs = await getDocs(collection(db, "shopping_lists"));
+
+    notesDocs.forEach((doc) => {
+      if (document.querySelector("#shoppingPage .notesSection[list_id='" + doc.id + "']") == null) {
+
+        const note = document.createElement("div");
+        note.classList.add("section");
+        note.classList.add("notesSection");
+        note.style.display = "inline-flex"
+        note.style.minHeight = "min-content"
+        note.style.width = "32.65%"
+        note.setAttribute("list_id", doc.id)
+
+        note.innerHTML = `<p class="notesTitle">${doc.id}</p>
+        <div class="notesButton" function="edit" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">expand_circle_right</i></div>`
+
+        document.getElementById("shoppingPage").appendChild(note);
+
+        note.querySelectorAll(".notesButton").forEach(button => {
+          button.addEventListener("click", async function () {
+            console.log("TEST")
+            document.querySelector("#shoppingEditPage").setAttribute("list_id", doc.id)
+            await goPage("shoppingEditPage")
+          })
+        })
+        
+      }
+    });
+  } else if (page == "shoppingEditPage") {
+    const list_id = document.querySelector("#shoppingEditPage").getAttribute("list_id")
+    const notesDocs = await getDoc(doc(db, "shopping_lists", list_id));
+
+    const data = notesDocs.data();
+
+    document.querySelectorAll("#shoppingEditPage .notesSection").forEach(section => {section.remove()})
+
+    for (const key in data) {
+
+      console.log(key)
+  
+      const note = document.createElement("div");
+      note.classList.add("section");
+      note.classList.add("notesSection");
+      note.style.display = "inline-flex"
+      note.style.minHeight = "min-content"
+      note.style.width = "32.65%"
+      note.setAttribute("list_id", doc.id)
+
+      let checked = data[key] ? "check_box" : "check_box_outline_blank"
+
+      note.innerHTML = `<div class="notesButton" function="check" style="padding-top: 5px"><i class="material-symbols-rounded">${checked}</i></div>
+      <p class="notesTitle">${key}</p>
+      <div class="notesButton" function="delete" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">delete</i></div>`
+
+      document.getElementById("shoppingEditPage").appendChild(note);
+
+      note.querySelectorAll(".notesButton").forEach(button => {
+        button.addEventListener("click", async function () {
+          const functionType = button.getAttribute("function");
+          if (functionType == "check") {
+            if (button.querySelector("i").innerHTML == "check_box_outline_blank") {
+              button.querySelector("i").innerHTML = "check_box"
+              await updateDoc(doc(db, "shopping_lists", list_id), {[key]: true})
+            } else {
+              button.querySelector("i").innerHTML = "check_box_outline_blank"
+              await updateDoc(doc(db, "shopping_lists", list_id), {[key]: false})
+            }
+
+          } else if (functionType == "delete") {
+            if (button.querySelector("i").innerHTML == "delete") {
+              button.querySelector("i").innerHTML = "delete_forever"
+            } else {
+              await updateDoc(doc(db, "shopping_lists", list_id), {[key]: deleteField()})
+              note.remove()
+            }
+          }
+        })
+      })
+
+    }
   }
 
 
@@ -230,6 +310,7 @@ document.querySelectorAll("#newNotesPagePersonButton").forEach(thisButton => {
     thisButton.style.backgroundColor = "#777"
   })
 });
+
 
 
 async function goPage(goToPage) {
