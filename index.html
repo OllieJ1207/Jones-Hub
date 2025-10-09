@@ -101,9 +101,34 @@
 
 
 
-  <div class="page" id="shoppingPage" style="opacity: 0; display: none;">
-    <p class="title">Shopping Lists</p>
-    <div class="section"></div>
+  <div class="page" id="shoppingPage" style="opacity: 0; display: none; flex-direction: row;">
+    <p class="title">Shopping List</p>
+    <div class="section" style="width: 100%;">
+      <p class="sectionTitle">Statistics</p>
+
+      <div>
+        <div class="sectionPill" id="shoppingPageTotalNotes"><b>Total Shopping List:</b> 0 lists</div>
+        <div class="sectionPillButton" id="shoppingPageCreateNoteButton" style="border: 2px solid #09f;">Create New List</div>
+      </div>
+
+    </div>
+  </div>
+
+
+
+  <div class="page" id="shoppingEditPage" style="opacity: 0; display: none; flex-direction: row;">
+    <p class="title">Shopping List</p>
+    <div class="section" style="width: 100%; min-height: min-content;">
+      <div class="sectionPill" id="shoppingPageTotalNotes"><b>Total Items:</b> 0 items</div>
+      <div class="sectionPillButton" id="shoppingEditPageCreateItemButton" style="border: 2px solid #09f;">Add item</div>
+      <div class="sectionPillButton" id="shoppingEditPageDeleteListButton" style="border: 2px solid #f00;">Delete List</div>
+    </div>
+
+    <div class="section notesSection" style="display: inline-flex; min-height: min-content; width: 32.65%;">
+      <div class="notesButton" function="edit" style="padding-top: 5px"><i class="material-symbols-rounded">check_box_outline_blank</i></div>
+      <p class="notesTitle">The items</p>
+      <div class="notesButton" function="edit" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">delete</i></div>
+    </div>
   </div>
 
 
@@ -125,7 +150,6 @@
       </div>
       
     </div>
-    
   </div>
 
   <div class="page" id="newNotesPage" style="opacity: 0; height: 100vh; display: none; flex-direction: row; overflow: hidden;" note_id="x">
