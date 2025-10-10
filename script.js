@@ -136,8 +136,8 @@ async function load_page(page) {
     }
     
   } else if (page == "shoppingPage") {
-    console.log("Test")
     const notesDocs = await getDocs(collection(db, "shopping_lists"));
+    document.querySelector("#shoppingPageTotalLists").innerHTML = `<b>Total Shopping Lists:</b> ${notesDocs.size} lists`
 
     notesDocs.forEach((doc) => {
       if (document.querySelector("#shoppingPage .notesSection[list_id='" + doc.id + "']") == null) {
@@ -159,6 +159,7 @@ async function load_page(page) {
           button.addEventListener("click", async function () {
             console.log("TEST")
             document.querySelector("#shoppingEditPage").setAttribute("list_id", doc.id)
+            document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Delete List"
             await goPage("shoppingEditPage")
           })
         })
@@ -170,12 +171,11 @@ async function load_page(page) {
     const notesDocs = await getDoc(doc(db, "shopping_lists", list_id));
 
     const data = notesDocs.data();
+    document.querySelector("#shoppingPageTotalItems").innerHTML = `<b>Total Items:</b> ${Object.keys(data).length} items`
 
     document.querySelectorAll("#shoppingEditPage .notesSection").forEach(section => {section.remove()})
 
     for (const key in data) {
-
-      console.log(key)
   
       const note = document.createElement("div");
       note.classList.add("section");
@@ -310,6 +310,83 @@ document.querySelectorAll("#newNotesPagePersonButton").forEach(thisButton => {
     thisButton.style.backgroundColor = "#777"
   })
 });
+
+
+
+document.getElementById("shoppingPageCreateListButton").addEventListener('click', async function () {
+  await goPage("shoppingNewListPage")
+})
+document.getElementById("shoppingEditPageCreateItemButton").addEventListener('click', async function () {
+  document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Delete List"
+  document.getElementById("shoppingListNewItemPageError").innerHTML = ""
+  await goPage("shoppingNewItemPage")
+})
+document.getElementById("shoppingEditPageDeleteListButton").addEventListener('click', async function () {
+  if (document.getElementById("shoppingEditPageDeleteListButton").innerHTML == "Delete List") {
+    document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Confirm Delete"
+  } else if (document.getElementById("shoppingEditPageDeleteListButton").innerHTML == "Confirm Delete") {
+    await deleteDoc(doc(db, "shopping_lists", document.querySelector("#shoppingEditPage").getAttribute("list_id")));
+    document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Delete List"
+    document.querySelector("#shoppingPage .notesSection[list_id='" + document.querySelector("#shoppingEditPage").getAttribute("list_id") + "']").remove()
+    document.querySelector("#shoppingEditPage").setAttribute("list_id", "")
+    await goPage("shoppingPage")
+  }
+})
+document.getElementById("shoppingNewListPageCancelListButton").addEventListener('click', async function () {
+  document.querySelector("#shoppingNewListPageTitleBox").value = ""
+  await goPage("shoppingPage")
+})
+document.getElementById("shoppingNewListPageCreateListButton").addEventListener('click', async function () {
+  await setDoc(doc(db, "shopping_lists", document.getElementById("shoppingNewListPageTitleBox").value), {});
+  document.querySelector("#shoppingNewListPageTitleBox").value = ""
+  await goPage("shoppingPage")
+})
+document.getElementById("shoppingNewItemPageCancelItemButton").addEventListener('click', async function () {
+  document.querySelector("#shoppingNewItemPageTitleBox").value = ""
+  await goPage("shoppingEditPage")
+})
+document.getElementById("shoppingNewItemPageAddMoreButton").addEventListener('click', async function () {
+  var itemValue = document.querySelector("#shoppingNewItemPageTitleBox").value
+  await setDoc(doc(db, "shopping_lists", document.querySelector("#shoppingEditPage").getAttribute("list_id"), {itemValue: false}));
+  document.querySelector("#shoppingNewItemPageTitleBox").value = ""
+})
+document.getElementById("shoppingNewItemPageAddItemButton").addEventListener('click', async function () {
+  const shoppingListRef = doc(db, "shopping_lists", document.querySelector("#shoppingEditPage").getAttribute("list_id"))
+  const shoppingListDoc = await getDoc(shoppingListRef)
+  if (shoppingListDoc.exists()) {
+    if (document.querySelector("#shoppingNewItemPageTitleBox").value == "") {
+      document.getElementById("shoppingListNewItemPageError").innerHTML = "Please fill in all boxes."
+    } else {
+      var shoppingListData = shoppingListDoc.data()
+      var itemValue = document.getElementById("shoppingNewItemPageTitleBox").value
+  
+      shoppingListData[itemValue] = false
+      console.log(shoppingListData)
+      await updateDoc(shoppingListRef, shoppingListData)
+      
+      document.querySelector("#shoppingNewItemPageTitleBox").value = ""
+      await goPage("shoppingEditPage")
+    }
+  } else {
+    document.getElementById("shoppingListNewItemPageError").innerHTML = "Error: List not found."
+  }
+})
+document.getElementById("shoppingListBackButton").addEventListener('click', async function () {
+  document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Delete List"
+  document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML = "Delete All Items"
+  await goPage("shoppingPage")
+})
+document.getElementById("shoppingEditPageDeleteItemsButton").addEventListener('click', async function () {
+  if (document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML == "Delete All Items") {
+    document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML = "Confirm Delete"
+  } else if (document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML == "Confirm Delete") {
+    
+    await setDoc(doc(db, "shopping_lists", document.querySelector("#shoppingEditPage").getAttribute("list_id")), {});
+    document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML = "Delete All Items"
+    document.querySelectorAll("#shoppingEditPage .notesSection").forEach(div => div.remove());
+    document.querySelector("#shoppingPageTotalItems").innerHTML = `<b>Total Items:</b> 0 items`
+  }
+})
 
 
 
