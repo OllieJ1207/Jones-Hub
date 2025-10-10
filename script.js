@@ -114,8 +114,10 @@ async function load_page(page) {
       const added_time_timestamp = notes[key]["added_time"].toDate();
       const added_time_string = added_time_timestamp.toLocaleString('en-GB', options).split(', ');
 
-      note.innerHTML = `<p class="notesTitle">${notes[key]}</p>
-      <div class="notesButton" function="edit"><i class="material-symbols-rounded">expand_circle_right</i></div>`
+      note.innerHTML = `<p class="notesTitle">${notes[key]["title"]}</p>
+      <div class="notesButton" function="edit"><i class="material-symbols-rounded">edit_square</i></div>
+      <div class="notesPara notesClampedText">${notes[key]["note"]}</div>
+      <p class="notesSubInfo">Created by: <b>${notes[key]["added_by"]}</b> on <b>${added_time_string}</b></p>`
 
       document.getElementById("notesPage").appendChild(note);
 
@@ -135,12 +137,12 @@ async function load_page(page) {
       
     }
     
-  } else if (page == "shoppingPage") {
-    const notesDocs = await getDocs(collection(db, "shopping_lists"));
-    document.querySelector("#shoppingPageTotalLists").innerHTML = `<b>Total Shopping Lists:</b> ${notesDocs.size} lists`
+  } else if (page == "listsPage") {
+    const notesDocs = await getDocs(collection(db, "lists"));
+    document.querySelector("#listsPageTotalLists").innerHTML = `<b>Total Lists:</b> ${notesDocs.size} lists`
 
     notesDocs.forEach((doc) => {
-      if (document.querySelector("#shoppingPage .notesSection[list_id='" + doc.id + "']") == null) {
+      if (document.querySelector("#listsPage .notesSection[list_id='" + doc.id + "']") == null) {
 
         const note = document.createElement("div");
         note.classList.add("section");
@@ -153,27 +155,27 @@ async function load_page(page) {
         note.innerHTML = `<p class="notesTitle">${doc.id}</p>
         <div class="notesButton" function="edit" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">expand_circle_right</i></div>`
 
-        document.getElementById("shoppingPage").appendChild(note);
+        document.getElementById("listsPage").appendChild(note);
 
         note.querySelectorAll(".notesButton").forEach(button => {
           button.addEventListener("click", async function () {
             console.log("TEST")
-            document.querySelector("#shoppingEditPage").setAttribute("list_id", doc.id)
-            document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Delete List"
-            await goPage("shoppingEditPage")
+            document.querySelector("#listsEditPage").setAttribute("list_id", doc.id)
+            document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
+            await goPage("listsEditPage")
           })
         })
         
       }
     });
-  } else if (page == "shoppingEditPage") {
-    const list_id = document.querySelector("#shoppingEditPage").getAttribute("list_id")
-    const notesDocs = await getDoc(doc(db, "shopping_lists", list_id));
+  } else if (page == "listsEditPage") {
+    const list_id = document.querySelector("#listsEditPage").getAttribute("list_id")
+    const notesDocs = await getDoc(doc(db, "lists", list_id));
 
     const data = notesDocs.data();
-    document.querySelector("#shoppingPageTotalItems").innerHTML = `<b>Total Items:</b> ${Object.keys(data).length} items`
+    document.querySelector("#listsPageTotalItems").innerHTML = `<b>Total Items:</b> ${Object.keys(data).length} items`
 
-    document.querySelectorAll("#shoppingEditPage .notesSection").forEach(section => {section.remove()})
+    document.querySelectorAll("#listsEditPage .notesSection").forEach(section => {section.remove()})
 
     for (const key in data) {
   
@@ -191,7 +193,7 @@ async function load_page(page) {
       <p class="notesTitle">${key}</p>
       <div class="notesButton" function="delete" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">delete</i></div>`
 
-      document.getElementById("shoppingEditPage").appendChild(note);
+      document.getElementById("listsEditPage").appendChild(note);
 
       note.querySelectorAll(".notesButton").forEach(button => {
         button.addEventListener("click", async function () {
@@ -199,17 +201,17 @@ async function load_page(page) {
           if (functionType == "check") {
             if (button.querySelector("i").innerHTML == "check_box_outline_blank") {
               button.querySelector("i").innerHTML = "check_box"
-              await updateDoc(doc(db, "shopping_lists", list_id), {[key]: true})
+              await updateDoc(doc(db, "lists", list_id), {[key]: true})
             } else {
               button.querySelector("i").innerHTML = "check_box_outline_blank"
-              await updateDoc(doc(db, "shopping_lists", list_id), {[key]: false})
+              await updateDoc(doc(db, "lists", list_id), {[key]: false})
             }
 
           } else if (functionType == "delete") {
             if (button.querySelector("i").innerHTML == "delete") {
               button.querySelector("i").innerHTML = "delete_forever"
             } else {
-              await updateDoc(doc(db, "shopping_lists", list_id), {[key]: deleteField()})
+              await updateDoc(doc(db, "lists", list_id), {[key]: deleteField()})
               note.remove()
             }
           }
@@ -313,78 +315,92 @@ document.querySelectorAll("#newNotesPagePersonButton").forEach(thisButton => {
 
 
 
-document.getElementById("shoppingPageCreateListButton").addEventListener('click', async function () {
-  await goPage("shoppingNewListPage")
+document.getElementById("listsPageCreateListButton").addEventListener('click', async function () {
+  await goPage("listsNewListPage")
 })
-document.getElementById("shoppingEditPageCreateItemButton").addEventListener('click', async function () {
-  document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Delete List"
-  document.getElementById("shoppingListNewItemPageError").innerHTML = ""
-  await goPage("shoppingNewItemPage")
+document.getElementById("listsEditPageCreateItemButton").addEventListener('click', async function () {
+  document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
+  document.getElementById("listsNewItemPageError").innerHTML = ""
+  await goPage("listsNewItemPage")
 })
-document.getElementById("shoppingEditPageDeleteListButton").addEventListener('click', async function () {
-  if (document.getElementById("shoppingEditPageDeleteListButton").innerHTML == "Delete List") {
-    document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Confirm Delete"
-  } else if (document.getElementById("shoppingEditPageDeleteListButton").innerHTML == "Confirm Delete") {
-    await deleteDoc(doc(db, "shopping_lists", document.querySelector("#shoppingEditPage").getAttribute("list_id")));
-    document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Delete List"
-    document.querySelector("#shoppingPage .notesSection[list_id='" + document.querySelector("#shoppingEditPage").getAttribute("list_id") + "']").remove()
-    document.querySelector("#shoppingEditPage").setAttribute("list_id", "")
-    await goPage("shoppingPage")
+document.getElementById("listsEditPageDeleteListButton").addEventListener('click', async function () {
+  if (document.getElementById("listsEditPageDeleteListButton").innerHTML == "Delete List") {
+    document.getElementById("listsEditPageDeleteListButton").innerHTML = "Confirm Delete"
+  } else if (document.getElementById("listsEditPageDeleteListButton").innerHTML == "Confirm Delete") {
+    await deleteDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id")));
+    document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
+    document.querySelector("#listsPage .notesSection[list_id='" + document.querySelector("#listsEditPage").getAttribute("list_id") + "']").remove()
+    document.querySelector("#listsEditPage").setAttribute("list_id", "")
+    await goPage("listsPage")
   }
 })
-document.getElementById("shoppingNewListPageCancelListButton").addEventListener('click', async function () {
-  document.querySelector("#shoppingNewListPageTitleBox").value = ""
-  await goPage("shoppingPage")
+document.getElementById("listsNewListPageCancelListButton").addEventListener('click', async function () {
+  document.querySelector("#listsNewListPageTitleBox").value = ""
+  await goPage("listsPage")
 })
-document.getElementById("shoppingNewListPageCreateListButton").addEventListener('click', async function () {
-  await setDoc(doc(db, "shopping_lists", document.getElementById("shoppingNewListPageTitleBox").value), {});
-  document.querySelector("#shoppingNewListPageTitleBox").value = ""
-  await goPage("shoppingPage")
+document.getElementById("listsNewListPageCreateListButton").addEventListener('click', async function () {
+  await setDoc(doc(db, "lists", document.getElementById("listsNewListPageTitleBox").value), {});
+  document.querySelector("#listsNewListPageTitleBox").value = ""
+  await goPage("listsPage")
 })
-document.getElementById("shoppingNewItemPageCancelItemButton").addEventListener('click', async function () {
-  document.querySelector("#shoppingNewItemPageTitleBox").value = ""
-  await goPage("shoppingEditPage")
+document.getElementById("listsNewItemPageCancelItemButton").addEventListener('click', async function () {
+  document.querySelector("#listsNewItemPageTitleBox").value = ""
+  await goPage("listsEditPage")
 })
-document.getElementById("shoppingNewItemPageAddMoreButton").addEventListener('click', async function () {
-  var itemValue = document.querySelector("#shoppingNewItemPageTitleBox").value
-  await setDoc(doc(db, "shopping_lists", document.querySelector("#shoppingEditPage").getAttribute("list_id"), {itemValue: false}));
-  document.querySelector("#shoppingNewItemPageTitleBox").value = ""
-})
-document.getElementById("shoppingNewItemPageAddItemButton").addEventListener('click', async function () {
-  const shoppingListRef = doc(db, "shopping_lists", document.querySelector("#shoppingEditPage").getAttribute("list_id"))
-  const shoppingListDoc = await getDoc(shoppingListRef)
-  if (shoppingListDoc.exists()) {
-    if (document.querySelector("#shoppingNewItemPageTitleBox").value == "") {
-      document.getElementById("shoppingListNewItemPageError").innerHTML = "Please fill in all boxes."
+document.getElementById("listsNewItemPageAddMoreButton").addEventListener('click', async function () {
+  const listsListRef = doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id"))
+  const listsListDoc = await getDoc(listsListRef)
+  if (listsListDoc.exists()) {
+    if (document.querySelector("#listsNewItemPageTitleBox").value == "") {
+      document.getElementById("listsListNewItemPageError").innerHTML = "Please fill in all boxes."
     } else {
-      var shoppingListData = shoppingListDoc.data()
-      var itemValue = document.getElementById("shoppingNewItemPageTitleBox").value
-  
-      shoppingListData[itemValue] = false
-      console.log(shoppingListData)
-      await updateDoc(shoppingListRef, shoppingListData)
-      
-      document.querySelector("#shoppingNewItemPageTitleBox").value = ""
-      await goPage("shoppingEditPage")
+      var listsListData = listsListDoc.data()
+      var itemValue = document.getElementById("listsNewItemPageTitleBox").value
+
+      listsListData[itemValue] = false
+      console.log(listsListData)
+      await updateDoc(listsListRef, listsListData)
+
+      document.querySelector("#listsNewItemPageTitleBox").value = ""
     }
   } else {
-    document.getElementById("shoppingListNewItemPageError").innerHTML = "Error: List not found."
+    document.getElementById("listsListNewItemPageError").innerHTML = "Error: List not found."
   }
 })
-document.getElementById("shoppingListBackButton").addEventListener('click', async function () {
-  document.getElementById("shoppingEditPageDeleteListButton").innerHTML = "Delete List"
-  document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML = "Delete All Items"
-  await goPage("shoppingPage")
+document.getElementById("listsNewItemPageAddItemButton").addEventListener('click', async function () {
+  const listsListRef = doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id"))
+  const listsListDoc = await getDoc(listsListRef)
+  if (listsListDoc.exists()) {
+    if (document.querySelector("#listsNewItemPageTitleBox").value == "") {
+      document.getElementById("listsListNewItemPageError").innerHTML = "Please fill in all boxes."
+    } else {
+      var listsListData = listsListDoc.data()
+      var itemValue = document.getElementById("listsNewItemPageTitleBox").value
+  
+      listsListData[itemValue] = false
+      console.log(listsListData)
+      await updateDoc(listsListRef, listsListData)
+      
+      document.querySelector("#listsNewItemPageTitleBox").value = ""
+      await goPage("listsEditPage")
+    }
+  } else {
+    document.getElementById("listsListNewItemPageError").innerHTML = "Error: List not found."
+  }
 })
-document.getElementById("shoppingEditPageDeleteItemsButton").addEventListener('click', async function () {
-  if (document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML == "Delete All Items") {
-    document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML = "Confirm Delete"
-  } else if (document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML == "Confirm Delete") {
-    
-    await setDoc(doc(db, "shopping_lists", document.querySelector("#shoppingEditPage").getAttribute("list_id")), {});
-    document.getElementById("shoppingEditPageDeleteItemsButton").innerHTML = "Delete All Items"
-    document.querySelectorAll("#shoppingEditPage .notesSection").forEach(div => div.remove());
-    document.querySelector("#shoppingPageTotalItems").innerHTML = `<b>Total Items:</b> 0 items`
+document.getElementById("listsBackButton").addEventListener('click', async function () {
+  document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
+  document.getElementById("listsEditPageDeleteItemsButton").innerHTML = "Delete All Items"
+  await goPage("listsPage")
+})
+document.getElementById("listsEditPageDeleteItemsButton").addEventListener('click', async function () {
+  if (document.getElementById("listsEditPageDeleteItemsButton").innerHTML == "Delete All Items") {
+    document.getElementById("listsEditPageDeleteItemsButton").innerHTML = "Confirm Delete"
+  } else if (document.getElementById("listsEditPageDeleteItemsButton").innerHTML == "Confirm Delete") {
+    await setDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id")), {});
+    document.getElementById("listsEditPageDeleteItemsButton").innerHTML = "Delete All Items"
+    document.querySelectorAll("#listsEditPage .notesSection").forEach(div => div.remove());
+    document.querySelector("#listsPageTotalItems").innerHTML = `<b>Total Items:</b> 0 items`
   }
 })
 
