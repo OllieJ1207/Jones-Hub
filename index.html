@@ -107,28 +107,55 @@
       <p class="sectionTitle">Statistics</p>
 
       <div>
-        <div class="sectionPill" id="shoppingPageTotalNotes"><b>Total Shopping List:</b> 0 lists</div>
-        <div class="sectionPillButton" id="shoppingPageCreateNoteButton" style="border: 2px solid #09f;">Create New List</div>
+        <div class="sectionPill" id="shoppingPageTotalLists"><b>Total Shopping List:</b> 0 lists</div>
+        <div class="sectionPillButton" id="shoppingPageCreateListButton" style="border: 2px solid #09f;">Create New List</div>
       </div>
 
     </div>
   </div>
+  
+  <div class="page" id="shoppingNewListPage" style="opacity: 0; display: none; flex-direction: row;">
+    <p class="title">Shopping List</p>
+    <div class="section" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+      <div>
+        <p class="sectionTitle" style="display: inline-block;">New List Form</p>
+        <p class="sectionTitle" id="editNotesPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
+        <div class="sectionPillButton" id="shoppingNewListPageCancelListButton" style="border: 2px solid #ff0;">Cancel List</div>
+        <div class="sectionPillButton" id="shoppingNewListPageCreateListButton" style="border: 2px solid #0f0;">Create List</div>
+      </div>
+  
+      <p class="notesTitle">List Title:</p>
+      <textarea class="notesPara notesTextBox" id="shoppingNewListPageTitleBox" type="text" value=""></textarea>
+    </div>
+  </div>
 
-
-
+  <div class="page" id="shoppingNewItemPage" style="opacity: 0; display: none; flex-direction: row;">
+    <p class="title">Shopping List</p>
+    <div class="section" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+  
+      <div>
+        <p class="sectionTitle" style="display: inline-block;">New Item Form</p>
+        <p class="sectionTitle" id="shoppingListNewItemPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
+        <div class="sectionPillButton" id="shoppingNewItemPageCancelItemButton" style="border: 2px solid #f00;">Cancel Item</div>
+        <div class="sectionPillButton" id="shoppingNewItemPageAddMoreButton" style="border: 2px solid #0f0;">Add Item & More</div>
+        <div class="sectionPillButton" id="shoppingNewItemPageAddItemButton" style="border: 2px solid #0f0;">Add Item</div>
+      </div>
+  
+      <p class="notesTitle">Item Title:</p>
+      <textarea class="notesPara notesTextBox" id="shoppingNewItemPageTitleBox" type="text" value=""></textarea>
+    </div>
+  </div>
+  
   <div class="page" id="shoppingEditPage" style="opacity: 0; display: none; flex-direction: row;">
     <p class="title">Shopping List</p>
     <div class="section" style="width: 100%; min-height: min-content;">
-      <div class="sectionPill" id="shoppingPageTotalNotes"><b>Total Items:</b> 0 items</div>
-      <div class="sectionPillButton" id="shoppingEditPageCreateItemButton" style="border: 2px solid #09f;">Add item</div>
+      <div class="sectionPill" id="shoppingPageTotalItems"><b>Total Items:</b> 0 items</div>
       <div class="sectionPillButton" id="shoppingEditPageDeleteListButton" style="border: 2px solid #f00;">Delete List</div>
+      <div class="sectionPillButton" id="shoppingEditPageDeleteItemsButton" style="border: 2px solid #f00;">Delete All Items</div>
+      <div class="sectionPillButton" id="shoppingEditPageCreateItemButton" style="border: 2px solid #09f;">Add item</div>
+      <div class="sectionPillButton" id="shoppingListBackButton" style="border: 2px solid #09f;">Back</div>
     </div>
-
-    <div class="section notesSection" style="display: inline-flex; min-height: min-content; width: 32.65%;">
-      <div class="notesButton" function="edit" style="padding-top: 5px"><i class="material-symbols-rounded">check_box_outline_blank</i></div>
-      <p class="notesTitle">The items</p>
-      <div class="notesButton" function="edit" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">delete</i></div>
-    </div>
+    
   </div>
 
 
@@ -157,10 +184,10 @@
     <div class="section" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
 
       <div>
-        <p class="sectionTitle" style="display: inline-block;">Statistics</p>
+        <p class="sectionTitle" style="display: inline-block;">New Note Form</p>
         <p class="sectionTitle" id="newNotesPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
-        <div class="sectionPillButton" id="newNotesPageCancelNoteButton" style="border: 2px solid #cc0;">Cancel New Note</div>
-        <div class="sectionPillButton" id="newNotesPageConfirmNoteButton" style="border: 2px solid #0c0;">Create New Note</div>
+        <div class="sectionPillButton" id="newNotesPageCancelNoteButton" style="border: 2px solid #ff0;">Cancel New Note</div>
+        <div class="sectionPillButton" id="newNotesPageConfirmNoteButton" style="border: 2px solid #0f0;">Create New Note</div>
       </div>
 
       <p class="notesTitle">Note Title:</p>
@@ -188,11 +215,11 @@
     <div class="section" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
 
       <div>
-        <p class="sectionTitle" style="display: inline-block;">Statistics</p>
+        <p class="sectionTitle" style="display: inline-block;">Edit Note Form</p>
         <p class="sectionTitle" id="editNotesPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
-        <div class="sectionPillButton" id="editNotesPageDeleteNoteButton" style="border: 2px solid #c00;">Delete Note</div>
-        <div class="sectionPillButton" id="editNotesPageCancelNoteButton" style="border: 2px solid #cc0;">Cancel Edits</div>
-        <div class="sectionPillButton" id="editNotesPageConfirmNoteButton" style="border: 2px solid #0c0;">Confirm Edits</div>
+        <div class="sectionPillButton" id="editNotesPageDeleteNoteButton" style="border: 2px solid #f00;">Delete Note</div>
+        <div class="sectionPillButton" id="editNotesPageCancelNoteButton" style="border: 2px solid #ff0;">Cancel Edits</div>
+        <div class="sectionPillButton" id="editNotesPageConfirmNoteButton" style="border: 2px solid #0f0;">Confirm Edits</div>
       </div>
 
       <p class="notesTitle">Note Title:</p>
