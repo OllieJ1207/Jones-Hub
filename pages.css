@@ -128,7 +128,7 @@ body {
 }
 
 .page .section {
-  min-height: 100px;
+  /*min-height: 100px;*/
   min-width: 100px;
   background-color: #444;
   border: 3px solid #333;
