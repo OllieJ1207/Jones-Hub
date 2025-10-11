@@ -142,7 +142,7 @@ async function load_page(page) {
     document.querySelector("#listsPageTotalLists").innerHTML = `<b>Total Lists:</b> ${notesDocs.size} lists`
 
     notesDocs.forEach((doc) => {
-      if (document.querySelector("#listsPage .notesSection[list_id='" + doc.id + "']") == null) {
+      if (document.querySelector(`#listsPage .notesSection[list_id='${doc.id}']`) == null) {
 
         const note = document.createElement("div");
         note.classList.add("section");
@@ -159,7 +159,6 @@ async function load_page(page) {
 
         note.querySelectorAll(".notesButton").forEach(button => {
           button.addEventListener("click", async function () {
-            console.log("TEST")
             document.querySelector("#listsEditPage").setAttribute("list_id", doc.id)
             document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
             await goPage("listsEditPage")
@@ -316,6 +315,7 @@ document.querySelectorAll("#newNotesPagePersonButton").forEach(thisButton => {
 
 
 document.getElementById("listsPageCreateListButton").addEventListener('click', async function () {
+  document.getElementById("listsNewListPageError").innerHTML = ""
   await goPage("listsNewListPage")
 })
 document.getElementById("listsEditPageCreateItemButton").addEventListener('click', async function () {
@@ -339,27 +339,34 @@ document.getElementById("listsNewListPageCancelListButton").addEventListener('cl
   await goPage("listsPage")
 })
 document.getElementById("listsNewListPageCreateListButton").addEventListener('click', async function () {
-  await setDoc(doc(db, "lists", document.getElementById("listsNewListPageTitleBox").value), {});
-  document.querySelector("#listsNewListPageTitleBox").value = ""
-  await goPage("listsPage")
+  var listTitle = document.getElementById("listsNewListPageTitleBox").value
+  if (listTitle == "") {
+    document.getElementById("listsNewListPageError").innerHTML = "Please fill in all boxes."
+  } else {
+    document.getElementById("listsNewListPageError").innerHTML = ""
+    listTitle = listTitle.replace(/[^a-zA-Z\s]/g, "")
+    await setDoc(doc(db, "lists", listTitle), {});
+    document.querySelector("#listsNewListPageTitleBox").value = ""
+    await goPage("listsPage")
+  }
 })
 document.getElementById("listsNewItemPageCancelItemButton").addEventListener('click', async function () {
   document.querySelector("#listsNewItemPageTitleBox").value = ""
   await goPage("listsEditPage")
 })
 document.getElementById("listsNewItemPageAddMoreButton").addEventListener('click', async function () {
-  const listsListRef = doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id"))
-  const listsListDoc = await getDoc(listsListRef)
-  if (listsListDoc.exists()) {
+  const listsRef = doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id"))
+  const listsDoc = await getDoc(listsRef)
+  if (listsDoc.exists()) {
     if (document.querySelector("#listsNewItemPageTitleBox").value == "") {
       document.getElementById("listsListNewItemPageError").innerHTML = "Please fill in all boxes."
     } else {
-      var listsListData = listsListDoc.data()
+      var listsData = listsDoc.data()
       var itemValue = document.getElementById("listsNewItemPageTitleBox").value
 
-      listsListData[itemValue] = false
-      console.log(listsListData)
-      await updateDoc(listsListRef, listsListData)
+      listsData[itemValue] = false
+      console.log(listsData)
+      await updateDoc(listsRef, listsData)
 
       document.querySelector("#listsNewItemPageTitleBox").value = ""
     }
@@ -368,18 +375,17 @@ document.getElementById("listsNewItemPageAddMoreButton").addEventListener('click
   }
 })
 document.getElementById("listsNewItemPageAddItemButton").addEventListener('click', async function () {
-  const listsListRef = doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id"))
-  const listsListDoc = await getDoc(listsListRef)
-  if (listsListDoc.exists()) {
+  const listsRef = doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id"))
+  const listsDoc = await getDoc(listsRef)
+  if (listsDoc.exists()) {
     if (document.querySelector("#listsNewItemPageTitleBox").value == "") {
       document.getElementById("listsListNewItemPageError").innerHTML = "Please fill in all boxes."
     } else {
-      var listsListData = listsListDoc.data()
+      var listsData = listsDoc.data()
       var itemValue = document.getElementById("listsNewItemPageTitleBox").value
   
-      listsListData[itemValue] = false
-      console.log(listsListData)
-      await updateDoc(listsListRef, listsListData)
+      listsData[itemValue] = false
+      await updateDoc(listsRef, listsData)
       
       document.querySelector("#listsNewItemPageTitleBox").value = ""
       await goPage("listsEditPage")
