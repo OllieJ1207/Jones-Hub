@@ -24,6 +24,14 @@ const options = {
   hour12: true
 };
 
+const birthdays = [
+  {name: "Rick", date: "1982-08-16"},
+  {name: "Anna", date: "1982-08-22"},
+  {name: "Ollie", date: "2007-12-03"},
+  {name: "Harry", date: "2010-06-25"},
+  {name: "Charlotte", date: "2017-04-12"}
+];
+
 
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 var changingPages = false
@@ -36,15 +44,29 @@ function getDeviceByScreen() {
   return "Desktop";
 }
 
+function getDaysUntilBirthday(birthdayStr) {
+  const today = new Date();
+  const [year, month, day] = birthdayStr.split("-").map(Number);
+
+  const thisYearBirthday = new Date(today.getFullYear(), month - 1, day);
+  const nextBirthday =
+    thisYearBirthday < today
+      ? new Date(today.getFullYear() + 1, month - 1, day)
+      : thisYearBirthday;
+
+  const diffTime = nextBirthday - today;
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
 document.addEventListener("DOMContentLoaded", async function (event) {
-  var device = getDeviceByScreen()
-  if (device == "Mobile") {
-    document.getElementById("testingabc123ghtovns").innerHTML = "Mobile"
-  } else if (device == "Tablet") {
-    document.getElementById("testingabc123ghtovns").innerHTML = "Tablet"
-  } else {
-    document.getElementById("testingabc123ghtovns").innerHTML = "Desktop"
-  }
+  const sorted = birthdays
+    .map(person => ({
+      ...person,
+      daysUntil: getDaysUntilBirthday(person.date)
+    }))
+    .sort((a, b) => a.daysUntil - b.daysUntil);
+
+  document.querySelector("#homePageBirthdaysText").innerHTML = sorted[0].name + " in " + sorted[0].daysUntil + " days"
 })
 
 document.getElementById("navbarButtonOpen").addEventListener("click", async function () {
