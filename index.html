@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width">
   <title>Jones Hub</title>
   <link href="global.css" rel="stylesheet" type="text/css" />
-  <link href="pages.css" rel="stylesheet" type="text/css" />
   <script type="module", src="script.js"></script>
 
   <!-- To make Google Icons (below) filled, change 2nd to last 0 to 1 -->
@@ -32,20 +31,20 @@
   <div class="navbar" id="navbar">
     <p class="navbarTitle" id="navbarTitle" >HUB</p>
     <div class="navbarButton active" page="homePage">
-      <i class="material-symbols-rounded icon" style="margin-right: 0px;">dashboard</i>
-      <p class="navbarButtonText" style="display: none;">Dashboard</p>
+      <i class="material-symbols-rounded icon" style="margin-right: 5px;">dashboard</i>
+      <p class="navbarButtonText" style="display: block;">Dashboard</p>
     </div>
     <div class="navbarButton" page="calenderPage">
-      <i class="material-symbols-rounded icon" style="margin-right: 0px;">calendar_month</i>
-      <p class="navbarButtonText" style="display: none;">Calender</p>
+      <i class="material-symbols-rounded icon" style="margin-right: 5px;">calendar_month</i>
+      <p class="navbarButtonText" style="display: block;">Calender</p>
     </div>
     <div class="navbarButton" page="listsPage">
-      <i class="material-symbols-rounded icon" style="margin-right: 0px;">list_alt</i>
-      <p class="navbarButtonText" style="display: none;">Lists</p>
+      <i class="material-symbols-rounded icon" style="margin-right: 5px;">list_alt</i>
+      <p class="navbarButtonText" style="display: block;">Lists</p>
     </div>
     <div class="navbarButton" page="notesPage">
-      <i class="material-symbols-rounded icon" style="margin-right: 0px;">notes</i>
-      <p class="navbarButtonText" style="display: none;">Notes</p>
+      <i class="material-symbols-rounded icon" style="margin-right: 5px;">notes</i>
+      <p class="navbarButtonText" style="display: block;">Notes</p>
     </div>
     <div class="navbarButton" style="margin-top: auto; margin-bottom: 10px" id="navbarButtonOpen" state="closed">
       <i class="material-symbols-rounded icon" id="navbarButtonOpenIcon" style="margin-right: 0; transform: rotate(0deg); transition: transform 0.25s ease-in-out;">arrow_forward_ios</i>
@@ -63,7 +62,9 @@
   <div class="page" id="homePage" style="justify-content: center;">
     <p class="title" style="overflow: clip; text-overflow: ellipsis; height: 82px;">Welcome to the Jones Family Hub!</p>
     <div class="sectionGroup" style="width: -webkit-fill-available; height: calc(50vh - 65px);">
-      <div class="section" style="width: 50%; height: 100%;"></div>
+      <div class="section" style="width: 50%; height: 100%;">
+        <p id="testingabc123ghtovns">None</p>
+      </div>
       <div class="section" style="width: 50%; height: 100%;"></div>
     </div>
     <div class="sectionGroup" style="width: -webkit-fill-available; height: calc(50vh - 65px);">
@@ -113,8 +114,10 @@
       <div>
         <p class="sectionTitle" style="display: inline-block;">New List Form</p>
         <p class="sectionTitle" id="listsNewListPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
-        <div class="sectionPillButton" id="listsNewListPageCancelListButton" style="border: 2px solid #ff0;">Cancel List</div>
-        <div class="sectionPillButton" id="listsNewListPageCreateListButton" style="border: 2px solid #0f0;">Create List</div>
+        <div class="sectionPillButtonDiv">
+          <div class="sectionPillButton" id="listsNewListPageCancelListButton" style="border: 2px solid #ff0;">Cancel List</div>
+          <div class="sectionPillButton" id="listsNewListPageCreateListButton" style="border: 2px solid #0f0;">Create List</div>
+        </div>
       </div>
   
       <p class="notesTitle">List Title:</p>
@@ -129,9 +132,11 @@
       <div>
         <p class="sectionTitle" style="display: inline-block;">New Item Form</p>
         <p class="sectionTitle" id="listsNewItemPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
-        <div class="sectionPillButton" id="listsNewItemPageCancelItemButton" style="border: 2px solid #f00;">Cancel Item</div>
-        <div class="sectionPillButton" id="listsNewItemPageAddMoreButton" style="border: 2px solid #0f0;">Add Item & More</div>
-        <div class="sectionPillButton" id="listsNewItemPageAddItemButton" style="border: 2px solid #0f0;">Add Item</div>
+        <div class="sectionPillButtonDiv">
+          <div class="sectionPillButton" id="listsNewItemPageCancelItemButton" style="border: 2px solid #f00;">Cancel Item</div>
+          <div class="sectionPillButton" id="listsNewItemPageAddMoreButton" style="border: 2px solid #0f0;">Add Item & More</div>
+          <div class="sectionPillButton" id="listsNewItemPageAddItemButton" style="border: 2px solid #0f0;">Add Item</div>
+        </div>
       </div>
   
       <p class="notesTitle">Item Title:</p>
@@ -143,10 +148,12 @@
     <p class="title">Lists</p>
     <div class="section" style="width: 100%; min-height: min-content;">
       <div class="sectionPill" id="listsPageTotalItems"><b>Total Items:</b> 0 items</div>
-      <div class="sectionPillButton" id="listsEditPageDeleteListButton" style="border: 2px solid #f00;">Delete List</div>
-      <div class="sectionPillButton" id="listsEditPageDeleteItemsButton" style="border: 2px solid #f00;">Delete All Items</div>
-      <div class="sectionPillButton" id="listsEditPageCreateItemButton" style="border: 2px solid #09f;">Add item</div>
-      <div class="sectionPillButton" id="listsBackButton" style="border: 2px solid #09f;">Back</div>
+      <div class="sectionPillButtonDiv">
+        <div class="sectionPillButton" id="listsEditPageDeleteListButton" style="border: 2px solid #f00;">Delete List</div>
+        <div class="sectionPillButton" id="listsEditPageDeleteItemsButton" style="border: 2px solid #f00;">Delete All Items</div>
+        <div class="sectionPillButton" id="listsEditPageCreateItemButton" style="border: 2px solid #09f;">Add item</div>
+        <div class="sectionPillButton" id="listsBackButton" style="border: 2px solid #09f;">Save</div>
+      </div>
     </div>
     
   </div>
@@ -178,8 +185,10 @@
       <div>
         <p class="sectionTitle" style="display: inline-block;">New Note Form</p>
         <p class="sectionTitle" id="newNotesPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
-        <div class="sectionPillButton" id="newNotesPageCancelNoteButton" style="border: 2px solid #ff0;">Cancel New Note</div>
-        <div class="sectionPillButton" id="newNotesPageConfirmNoteButton" style="border: 2px solid #0f0;">Create New Note</div>
+        <div class="sectionPillButtonDiv">
+          <div class="sectionPillButton" id="newNotesPageCancelNoteButton" style="border: 2px solid #ff0;">Cancel New Note</div>
+          <div class="sectionPillButton" id="newNotesPageConfirmNoteButton" style="border: 2px solid #0f0;">Create New Note</div>
+        </div>
       </div>
 
       <p class="notesTitle">Note Title:</p>
@@ -191,7 +200,7 @@
       </div>
 
       <p class="notesTitle">Note Added By:</p>
-      <div style="display: flex; justify-content: space-around;">
+      <div id="EXLCnotesPagePersonButtons">
         <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #ff3d06; width: -webkit-fill-available; text-align: center;">Rick</div>
         <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #f0f; width: -webkit-fill-available; text-align: center;">Anna</div>
         <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #0f0; width: -webkit-fill-available; text-align: center;">Ollie</div>
@@ -209,9 +218,11 @@
       <div>
         <p class="sectionTitle" style="display: inline-block;">Edit Note Form</p>
         <p class="sectionTitle" id="editNotesPageError" style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
-        <div class="sectionPillButton" id="editNotesPageDeleteNoteButton" style="border: 2px solid #f00;">Delete Note</div>
-        <div class="sectionPillButton" id="editNotesPageCancelNoteButton" style="border: 2px solid #ff0;">Cancel Edits</div>
-        <div class="sectionPillButton" id="editNotesPageConfirmNoteButton" style="border: 2px solid #0f0;">Confirm Edits</div>
+        <div class="sectionPillButtonDiv">
+          <div class="sectionPillButton" id="editNotesPageDeleteNoteButton" style="border: 2px solid #f00;">Delete Note</div>
+          <div class="sectionPillButton" id="editNotesPageCancelNoteButton" style="border: 2px solid #ff0;">Cancel Edits</div>
+          <div class="sectionPillButton" id="editNotesPageConfirmNoteButton" style="border: 2px solid #0f0;">Confirm Edits</div>
+        </div>
       </div>
 
       <p class="notesTitle">Note Title:</p>
