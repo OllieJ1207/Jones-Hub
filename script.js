@@ -55,7 +55,7 @@ document.getElementById("navbarButtonOpen").addEventListener("click", async func
     document.getElementById("navbarButtonOpenIcon").style.transform = "rotate(180deg)"
     document.getElementById("navbar").style.width = "225px"
     
-    await wait(200)
+    await wait(310)
     
     /*const buttons = document.querySelectorAll('.navbarButton');
     buttons.forEach(button => {
@@ -87,7 +87,7 @@ document.getElementById("navbarButtonOpen").addEventListener("click", async func
     document.getElementById("navbarTitle").innerHTML = "HUB"
     document.getElementById("navbar").style.width = "86px"
     
-    await wait(200)
+    await wait(310)
     
     document.getElementById("navbarButtonOpen").setAttribute("state", "closed")
   }
