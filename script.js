@@ -28,6 +28,25 @@ const options = {
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 var changingPages = false
 
+function getDeviceByScreen() {
+  const width = window.innerWidth;
+
+  if (width <= 768) return "Mobile";
+  if (width <= 1024) return "Tablet";
+  return "Desktop";
+}
+
+document.addEventListener("DOMContentLoaded", async function (event) {
+  var device = getDeviceByScreen()
+  if (device == "Mobile") {
+    document.getElementById("testingabc123ghtovns").innerHTML = "Mobile"
+  } else if (device == "Tablet") {
+    document.getElementById("testingabc123ghtovns").innerHTML = "Tablet"
+  } else {
+    document.getElementById("testingabc123ghtovns").innerHTML = "Desktop"
+  }
+})
+
 document.getElementById("navbarButtonOpen").addEventListener("click", async function () {
   if (document.getElementById("navbarButtonOpen").getAttribute("state") == "closed") {
     
@@ -38,13 +57,13 @@ document.getElementById("navbarButtonOpen").addEventListener("click", async func
     
     await wait(200)
     
-    const buttons = document.querySelectorAll('.navbarButton');
+    /*const buttons = document.querySelectorAll('.navbarButton');
     buttons.forEach(button => {
       if (button.id !== "navbarButtonOpen") {
         button.querySelector(".icon").style.marginRight = "5px";
         button.querySelector(".navbarButtonText").style.display = "block";
       }
-    });
+    });*/
     
     document.getElementById("navbarTitle").innerHTML = "JONES HUB"
     document.getElementById("navbarButtonOpen").setAttribute("state", "open")
@@ -57,13 +76,13 @@ document.getElementById("navbarButtonOpen").addEventListener("click", async func
     document.getElementById("navbarButtonOpen").classList.remove("active")
     document.getElementById("navbarButtonOpenIcon").style.transform = "rotate(0deg)"
     
-    const buttons = document.querySelectorAll('.navbarButton');
+    /*const buttons = document.querySelectorAll('.navbarButton');
     buttons.forEach(button => {
       if (button.id !== "navbarButtonOpen") {
         button.querySelector(".icon").style.marginRight = "0px";
         button.querySelector(".navbarButtonText").style.display = "none";
       } 
-    });
+    });*/
     
     document.getElementById("navbarTitle").innerHTML = "HUB"
     document.getElementById("navbar").style.width = "86px"
@@ -85,6 +104,7 @@ document.querySelectorAll('.navbarButton').forEach(button => {
 
 
 async function load_page(page) {
+  const deviceType = getDeviceByScreen()
 
   ///// NOTES PAGE /////
   if (page == "notesPage") {
@@ -110,6 +130,7 @@ async function load_page(page) {
       note.classList.add("section");
       note.classList.add("notesSection");
       note.setAttribute("note_id", key)
+      note.setAttribute("columnType", "3COL")
 
       const added_time_timestamp = notes[key]["added_time"].toDate();
       const added_time_string = added_time_timestamp.toLocaleString('en-GB', options).split(', ');
@@ -141,6 +162,8 @@ async function load_page(page) {
     const notesDocs = await getDocs(collection(db, "lists"));
     document.querySelector("#listsPageTotalLists").innerHTML = `<b>Total Lists:</b> ${notesDocs.size} lists`
 
+    document.querySelectorAll("#listsPage .notesSection").forEach(section => {section.remove()})
+
     notesDocs.forEach((doc) => {
       if (document.querySelector(`#listsPage .notesSection[list_id='${doc.id}']`) == null) {
 
@@ -149,8 +172,8 @@ async function load_page(page) {
         note.classList.add("notesSection");
         note.style.display = "inline-flex"
         note.style.minHeight = "min-content"
-        note.style.width = "32.65%"
         note.setAttribute("list_id", doc.id)
+        note.setAttribute("columnType", "3COL")
 
         note.innerHTML = `<p class="notesTitle">${doc.id}</p>
         <div class="notesButton" function="edit" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">expand_circle_right</i></div>`
@@ -171,51 +194,58 @@ async function load_page(page) {
     const list_id = document.querySelector("#listsEditPage").getAttribute("list_id")
     const notesDocs = await getDoc(doc(db, "lists", list_id));
 
-    const data = notesDocs.data();
-    document.querySelector("#listsPageTotalItems").innerHTML = `<b>Total Items:</b> ${Object.keys(data).length} items`
+    if (!notesDocs.exists()) {
+      await wait(310)
+      await goPage("listsPage")
+    } else {
 
-    document.querySelectorAll("#listsEditPage .notesSection").forEach(section => {section.remove()})
-
-    for (const key in data) {
+      const data = notesDocs.data();
+      document.querySelector("#listsPageTotalItems").innerHTML = `<b>Total Items:</b> ${Object.keys(data).length} items`
   
-      const note = document.createElement("div");
-      note.classList.add("section");
-      note.classList.add("notesSection");
-      note.style.display = "inline-flex"
-      note.style.minHeight = "min-content"
-      note.style.width = "32.65%"
-      note.setAttribute("list_id", doc.id)
-
-      let checked = data[key] ? "check_box" : "check_box_outline_blank"
-
-      note.innerHTML = `<div class="notesButton" function="check" style="padding-top: 5px"><i class="material-symbols-rounded">${checked}</i></div>
-      <p class="notesTitle">${key}</p>
-      <div class="notesButton" function="delete" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">delete</i></div>`
-
-      document.getElementById("listsEditPage").appendChild(note);
-
-      note.querySelectorAll(".notesButton").forEach(button => {
-        button.addEventListener("click", async function () {
-          const functionType = button.getAttribute("function");
-          if (functionType == "check") {
-            if (button.querySelector("i").innerHTML == "check_box_outline_blank") {
-              button.querySelector("i").innerHTML = "check_box"
-              await updateDoc(doc(db, "lists", list_id), {[key]: true})
-            } else {
-              button.querySelector("i").innerHTML = "check_box_outline_blank"
-              await updateDoc(doc(db, "lists", list_id), {[key]: false})
+      document.querySelectorAll("#listsEditPage .notesSection").forEach(section => {section.remove()})
+  
+      for (const key in data) {
+    
+        const note = document.createElement("div");
+        note.classList.add("section");
+        note.style.display = "inline-flex"
+        note.classList.add("notesSection");
+        note.style.minHeight = "min-content"
+        note.setAttribute("list_id", doc.id)
+        note.setAttribute("columnType", "3COL")
+  
+        let checked = data[key] ? "check_box" : "check_box_outline_blank"
+  
+        note.innerHTML = `<div class="notesButton" function="check" style="padding-top: 5px"><i class="material-symbols-rounded">${checked}</i></div>
+        <p class="notesTitle">${key}</p>
+        <div class="notesButton" function="delete" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">delete</i></div>`
+  
+        document.getElementById("listsEditPage").appendChild(note);
+  
+        note.querySelectorAll(".notesButton").forEach(button => {
+          button.addEventListener("click", async function () {
+            const functionType = button.getAttribute("function");
+            if (functionType == "check") {
+              if (button.querySelector("i").innerHTML == "check_box_outline_blank") {
+                button.querySelector("i").innerHTML = "check_box"
+                // await updateDoc(doc(db, "lists", list_id), {[key]: true})
+              } else {
+                button.querySelector("i").innerHTML = "check_box_outline_blank"
+                // await updateDoc(doc(db, "lists", list_id), {[key]: false})
+              }
+  
+            } else if (functionType == "delete") {
+              if (button.querySelector("i").innerHTML == "delete") {
+                button.querySelector("i").innerHTML = "delete_forever"
+              } else {
+                // await updateDoc(doc(db, "lists", list_id), {[key]: deleteField()})
+                note.remove()
+              }
             }
-
-          } else if (functionType == "delete") {
-            if (button.querySelector("i").innerHTML == "delete") {
-              button.querySelector("i").innerHTML = "delete_forever"
-            } else {
-              await updateDoc(doc(db, "lists", list_id), {[key]: deleteField()})
-              note.remove()
-            }
-          }
+          })
         })
-      })
+
+      }
 
     }
   }
@@ -237,8 +267,8 @@ document.getElementById("editNotesPageConfirmNoteButton").addEventListener('clic
     note: document.getElementById("editNotesPageDescBox").value
   })
 
-  document.querySelector(".notesSection[note_id='" + note_id + "']").querySelectorAll(".notesTitle")[0].innerHTML = document.getElementById("editNotesPageTitleBox").value
-  document.querySelector(".notesSection[note_id='" + note_id + "']").querySelectorAll(".notesPara")[0].innerHTML = document.getElementById("editNotesPageDescBox").value
+  document.querySelector(".notesPage .notesSection[note_id='" + note_id + "']").querySelectorAll(".notesTitle")[0].innerHTML = document.getElementById("editNotesPageTitleBox").value
+  document.querySelector(".notesPage .notesSection[note_id='" + note_id + "']").querySelectorAll(".notesPara")[0].innerHTML = document.getElementById("editNotesPageDescBox").value
 
   await goPage("notesPage")
   
@@ -395,6 +425,14 @@ document.getElementById("listsNewItemPageAddItemButton").addEventListener('click
   }
 })
 document.getElementById("listsBackButton").addEventListener('click', async function () {
+  var newList = {}
+  document.querySelectorAll("#listsEditPage .notesSection").forEach(section => {
+    const title = section.querySelector(".notesTitle").innerHTML
+    const checked = section.querySelector(".notesButton[function='check'] i").innerHTML == "check_box" ? true : false
+    newList[title] = checked
+  })
+  console.log(newList)
+  await setDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id")), newList);
   document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
   document.getElementById("listsEditPageDeleteItemsButton").innerHTML = "Delete All Items"
   await goPage("listsPage")
