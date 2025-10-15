@@ -24,6 +24,7 @@ const options = {
   hour12: true
 };
 
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
 const birthdays = [
   {name: "Rick", date: "1982-08-16"},
   {name: "Anna", date: "1982-08-22"},
@@ -66,7 +67,30 @@ document.addEventListener("DOMContentLoaded", async function (event) {
     }))
     .sort((a, b) => a.daysUntil - b.daysUntil);
 
-  document.querySelector("#homePageBirthdaysText").innerHTML = sorted[0].name + " in " + sorted[0].daysUntil + " days"
+  var stringDate = sorted[0].date.split("-")
+  stringDate = stringDate[2] + " " + months[stringDate[1] - 1]
+  
+  document.querySelector("#homePageBirthdaysText").innerHTML = sorted[0].name + " in " + sorted[0].daysUntil + " days <p style='font-size: 15px; display: inline-block'> (" + stringDate + ")</p>"
+  if (sorted[0].daysUntil == 0) {
+    document.querySelector("#homePageBirthdaysText").innerHTML = sorted[0].name + " today!"
+  } else if (sorted[0].daysUntil < 7) {
+    document.querySelector("#homePageBirthdaysTitle").innerHTML = "⌛ Birthday: "
+  }
+
+
+  if (localStorage.getItem("deviceUser") == null) {
+    document.querySelector(".V1GLOBAL_DEVICE_SET").style.display = "flex"
+    document.querySelectorAll("#V1GLOBAL_DEVICE_SET_BUTTON").forEach(button => {
+      button.addEventListener("click", async function () {
+        localStorage.setItem("deviceUser", button.innerHTML)
+        document.querySelector(".V1GLOBAL_DEVICE_SET").style.width = "0vw"
+      })
+    })
+  }
+  
+  await wait(1000);
+  document.querySelector('.V1GLOBAL_LoadingDiv').style.width = '0vw';
+  
 })
 
 document.getElementById("navbarButtonOpen").addEventListener("click", async function () {
@@ -118,7 +142,15 @@ document.getElementById("navbarButtonOpen").addEventListener("click", async func
 document.querySelectorAll('.navbarButton').forEach(button => {
   button.addEventListener('click', async function () {
     if (button.id !== "navbarButtonOpen") {
-      await goPage(button.getAttribute('page'))
+      if (button.getAttribute('page').startsWith("function:")) {
+
+        if (button.getAttribute('page') == "function:Refresh") {
+          window.location.reload()
+        }
+        
+      } else {
+        await goPage(button.getAttribute('page'))
+      }
     }
   })
 });
@@ -318,15 +350,24 @@ document.getElementById("notesPageCreateNoteButton").addEventListener('click', a
   document.getElementById("newNotesPageTitleBox").value = ""
   document.getElementById("newNotesPageDescBox").value = ""
   document.getElementById("newNotesPageError").innerHTML = ""
+  document.getElementById("EXCLnotesPagePersonButtons").style.display = "flex"
+  document.getElementById("EXCLnotesPagePersonTitle").style.display = "inline-block"
   document.querySelectorAll('#newNotesPagePersonButton').forEach(button => {
     button.style.backgroundColor = "#555"
   })
+  if (localStorage.getItem("deviceUser") != null) {
+    document.getElementById("EXCLnotesPagePersonButtons").style.display = "none";
+    document.getElementById("EXCLnotesPagePersonTitle").style.display = "none";
+  }
   await goPage("newNotesPage")
 })
 
 document.getElementById("newNotesPageConfirmNoteButton").addEventListener('click', async function () {
   const buttons = document.querySelectorAll('#newNotesPagePersonButton');
   var added_by = ""
+  if (localStorage.getItem("deviceUser") != null) {
+    added_by = localStorage.getItem("deviceUser")
+  }
   buttons.forEach(button => {
     if (button.style.backgroundColor == "rgb(119, 119, 119)") {
       added_by = button.innerHTML
@@ -391,6 +432,13 @@ document.getElementById("listsNewListPageCancelListButton").addEventListener('cl
   await goPage("listsPage")
 })
 document.getElementById("listsNewListPageCreateListButton").addEventListener('click', async function () {
+  const buttons = document.querySelectorAll('#newListPagePersonButton');
+  var added_by = ""
+  buttons.forEach(button => {
+    if (button.style.backgroundColor == "rgb(119, 119, 119)") {
+      added_by = button.innerHTML
+    }
+  })
   var listTitle = document.getElementById("listsNewListPageTitleBox").value
   if (listTitle == "") {
     document.getElementById("listsNewListPageError").innerHTML = "Please fill in all boxes."
