@@ -32,6 +32,10 @@ const birthdays = [
   {name: "Harry", date: "2010-06-25"},
   {name: "Charlotte", date: "2017-04-12"}
 ];
+const events = [
+  {name: "Halloween", date: "2000-10-31", emoji: "🎃"},
+  {name: "Christmas", date: "2000-12-25", emoji: "🎅"},
+];
 
 
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
@@ -60,6 +64,8 @@ function getDaysUntilBirthday(birthdayStr) {
 }
 
 document.addEventListener("DOMContentLoaded", async function (event) {
+
+  //next birthday
   const sorted = birthdays
     .map(person => ({
       ...person,
@@ -76,6 +82,27 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   } else if (sorted[0].daysUntil < 7) {
     document.querySelector("#homePageBirthdaysTitle").innerHTML = "⌛ Birthday: "
   }
+
+  //next event
+  const sortedEvents = events
+    .map(event => ({
+      ...event,
+      daysUntil: getDaysUntilBirthday(event.date)
+    }))
+    .sort((a, b) => a.daysUntil - b.daysUntil)
+    .filter(event => event.daysUntil >= 0)
+
+  var stringDate = sortedEvents[0].date.split("-")
+  stringDate = stringDate[2] + " " + months[stringDate[1] - 1]
+
+  document.querySelector("#homePageEventsText").innerHTML = sortedEvents[0].name + " in " + sortedEvents[0].daysUntil + " days <p style='font-size: 15px; display: inline-block'> (" + stringDate + ")</p>"
+  document.querySelector("#homePageEventsTitle").innerHTML = sortedEvents[0].emoji +" Next Event: "
+  if (sortedEvents[0].daysUntil == 0) {
+    document.querySelector("#homePageEventsText").innerHTML = sortedEvents[0].name + " today!"
+  } else if (sortedEvents[0].daysUntil < 7) {
+    document.querySelector("#homePageEventsTitle").innerHTML = "⌛ Next Event: "
+  }
+  
 
 
   if (localStorage.getItem("deviceUser") == null) {
