@@ -20,6 +20,20 @@
     <div class="V1GLOBAL_Loader"></div>
   </div>
 
+  <div class="V1GLOBAL_DEVICE_SET">
+    <div id="V1GLOBAL_DEVICE_SET_DIV">
+      <p style="font-size: 25px; color: #fff; margin-bottom: 10px;">Who is using this device?</p>
+      <div id="V1GLOBAL_DEVICE_SET_BUTTON_DIV">
+        <button id="V1GLOBAL_DEVICE_SET_BUTTON" style="border-color: #ff3d06;">Rick</button>
+        <button id="V1GLOBAL_DEVICE_SET_BUTTON" style="border-color: #f0f;">Anna</button>
+        <button id="V1GLOBAL_DEVICE_SET_BUTTON" style="border-color: #0f0;">Ollie</button>
+        <button id="V1GLOBAL_DEVICE_SET_BUTTON" style="border-color: #09f;">Harry</button>
+        <button id="V1GLOBAL_DEVICE_SET_BUTTON" style="border-color: #90f;">Charlotte</button>
+        <button id="V1GLOBAL_DEVICE_SET_BUTTON" style="border-color: #fff;">Family</button>
+      </div>
+    </div>
+  </div>
+
 
 
   <!-- ////////////////////////////////////////////////////////////////////////// -->
@@ -46,6 +60,10 @@
       <i class="material-symbols-rounded icon" style="margin-right: 5px;">notes</i>
       <p class="navbarButtonText" style="display: block;">Notes</p>
     </div>
+    <div class="navbarButton" page="function:Refresh">
+      <i class="material-symbols-rounded icon" style="margin-right: 5px;">refresh</i>
+      <p class="navbarButtonText" style="display: block;">Refresh</p>
+    </div>
     <div class="navbarButton" style="margin-top: auto; margin-bottom: 10px" id="navbarButtonOpen" state="closed">
       <i class="material-symbols-rounded icon" id="navbarButtonOpenIcon" style="margin-right: 0; transform: rotate(0deg); transition: transform 0.25s ease-in-out;">arrow_forward_ios</i>
     </div>
@@ -62,8 +80,8 @@
   <div class="page" id="homePage" style="justify-content: center;">
     <p class="title" style="overflow: clip; text-overflow: ellipsis; height: 82px;">Welcome to the Jones Family Hub!</p>
       <div class="section EXCLhomePageSection">
-        <p class="sectionTitle" style="text-align: center; border-bottom: 2px solid #09f; padding-bottom: 2px;">Upcoming Dates</p>
-        <p class="sectionTitle" style="display: inline-block;">🎂 Next Birthday: </p>
+        <p class="sectionTitle" style="text-align: center; border-bottom: 2px solid #09f; padding-bottom: 2px;">Upcoming Events</p>
+        <p class="sectionTitle" id="homePageBirthdaysTitle" style="display: inline-block;">🎂 Birthday: </p>
         <p class="sectionPara" id="homePageBirthdaysText" style="display: inline-block">None</p>
       </div>
       <div class="section EXCLhomePageSection"></div>
@@ -197,8 +215,8 @@
         <textarea class="notesPara notesTextBox" id="newNotesPageDescBox" type="text" value="" style="flex-grow: 1; height: 100%; overflow-y: auto;"></textarea>
       </div>
 
-      <p class="notesTitle">Note Added By:</p>
-      <div id="EXLCnotesPagePersonButtons">
+      <p class="notesTitle" id="EXCLnotesPagePersonTitle">Note Added By:</p>
+      <div id="EXCLnotesPagePersonButtons">
         <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #ff3d06; width: -webkit-fill-available; text-align: center;">Rick</div>
         <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #f0f; width: -webkit-fill-available; text-align: center;">Anna</div>
         <div class="sectionPillButton" id="newNotesPagePersonButton" style="border: 2px solid #0f0; width: -webkit-fill-available; text-align: center;">Ollie</div>
@@ -233,24 +251,6 @@
     </div>
 
   </div>
-
-
-
-  <!-- ////////////////////////////////////////////////////////////////////////// -->
-  <!-- Scripts ////////////////////////////////////////////////////////////////// -->
-  <!-- ////////////////////////////////////////////////////////////////////////// -->
-
-
-
-  <script>
-    const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
-    document.addEventListener("DOMContentLoaded", async function (event) {
-      await wait(1000);
-      document.querySelector('.V1GLOBAL_LoadingDiv').style.width = '0vw';
-    })
-  </script>
-  
-  
 
 </body>
 
