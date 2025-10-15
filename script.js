@@ -25,14 +25,12 @@ const options = {
 };
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
-const birthdays = [
-  {name: "Rick", date: "1982-08-16"},
-  {name: "Anna", date: "1982-08-22"},
-  {name: "Ollie", date: "2007-12-03"},
-  {name: "Harry", date: "2010-06-25"},
-  {name: "Charlotte", date: "2017-04-12"}
-];
 const events = [
+  {name: "Rick", date: "1982-08-16", emoji: "🎂"},
+  {name: "Anna", date: "1982-08-22", emoji: "🎂"},
+  {name: "Ollie", date: "2007-12-03", emoji: "🎂"},
+  {name: "Harry", date: "2010-06-25", emoji: "🎂"},
+  {name: "Charlotte", date: "2017-04-12", emoji: "🎂"},
   {name: "Halloween", date: "2000-10-31", emoji: "🎃"},
   {name: "Christmas", date: "2000-12-25", emoji: "🎅"},
 ];
@@ -64,24 +62,6 @@ function getDaysUntilBirthday(birthdayStr) {
 }
 
 document.addEventListener("DOMContentLoaded", async function (event) {
-
-  //next birthday
-  const sorted = birthdays
-    .map(person => ({
-      ...person,
-      daysUntil: getDaysUntilBirthday(person.date)
-    }))
-    .sort((a, b) => a.daysUntil - b.daysUntil);
-
-  var stringDate = sorted[0].date.split("-")
-  stringDate = stringDate[2] + " " + months[stringDate[1] - 1]
-  
-  document.querySelector("#homePageBirthdaysText").innerHTML = sorted[0].name + " in " + sorted[0].daysUntil + " days <p style='font-size: 15px; display: inline-block'> (" + stringDate + ")</p>"
-  if (sorted[0].daysUntil == 0) {
-    document.querySelector("#homePageBirthdaysText").innerHTML = sorted[0].name + " today!"
-  } else if (sorted[0].daysUntil < 7) {
-    document.querySelector("#homePageBirthdaysTitle").innerHTML = "⌛ Birthday: "
-  }
 
   //next event
   const sortedEvents = events
