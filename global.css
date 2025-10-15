@@ -36,7 +36,53 @@ body {
   background-color: #037;
   transition: width 1s cubic-bezier(0.74, 0.1, 0.27, 0.83);
   overflow: hidden;
-  z-index: 99999999999999;
+  z-index: 999999999999999;
+}
+
+.V1GLOBAL_DEVICE_SET {
+  display: none;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background-color: #333;
+  transition: width 1s cubic-bezier(0.74, 0.1, 0.27, 0.83);
+  overflow: hidden;
+  z-index: 999;
+}
+#V1GLOBAL_DEVICE_SET_DIV {
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #333;
+}
+#V1GLOBAL_DEVICE_SET_BUTTON_DIV {
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+  gap: 10px;
+}
+@media only screen and (max-width: 768px) {
+  #V1GLOBAL_DEVICE_SET_BUTTON_DIV {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+#V1GLOBAL_DEVICE_SET_BUTTON {
+  padding: 15px;
+  width: 150px;
+  border-radius: 50px;
+  border: 2px solid #09f;
+  background: #444;
+  font-family: 'Russo One', sans-serif;
+  font-size: 20px;
+  color: #fff;
 }
 
 .V1GLOBAL_LoadingDiv .V1GLOBAL_Loader {
@@ -231,6 +277,7 @@ body {
   height: fit-content;
   float: right;
   margin-right: 5px;
+  user-select: none;
 }
 
 .page .sectionPillButtonDiv {
@@ -363,13 +410,13 @@ body {
   text-overflow: ellipsis;
 }
 
-#EXLCnotesPagePersonButtons {
+#EXCLnotesPagePersonButtons {
   display: flex;
   justify-content: space-around;
 }
 /* Mobile override */
 @media only screen and (max-width: 768px) {
-  #EXLCnotesPagePersonButtons {
+  #EXCLnotesPagePersonButtons {
     display: flex;
     justify-content: space-around;
     flex-direction: column;
