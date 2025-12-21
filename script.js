@@ -157,6 +157,10 @@ document.addEventListener("DOMContentLoaded", async function (event) {
     await LoadPage_HomePage_LoadEvents()
   } else if (window.location.href.endsWith("/listsPage")) {
     await LoadPage_ListsPage_LoadLists()
+  } else if (window.location.href.endsWith("/settingsPage")) {
+    if (localStorage.getItem("deviceUser") != null) {
+      document.querySelector("#settingsDefault-DeviceUserBox").value = localStorage.getItem("deviceUser")
+    }
   }
   
 
@@ -329,63 +333,7 @@ async function LoadPage_ListsPage_LoadList(listID) {
   document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv").forEach( (item) => { item.remove(); } )
 
   for (const key in listItems) {
-    
-    const itemDiv = document.createElement("div");
-    itemDiv.classList.add("section");
-    itemDiv.classList.add("listsPage-ItemDiv")
-    itemDiv.setAttribute("columnType", "3COL");
-    itemDiv.setAttribute("itemID", key);
-    itemDiv.setAttribute("itemState", listItems[key][1])
-
-    let checked = listItems[key][1] ? "check_box" : "check_box_outline_blank"
-    let colour = listItems[key][1] ? "var(--colSuccess)" : "var(--colNorm)"
-
-    
-
-      itemDiv.innerHTML = `
-      <div class="listsPage-SmallIconButton" function="check" style="color: ${colour}"><i class="material-symbols-rounded">${checked}</i></div>
-      <p class="sectionPara">${listItems[key][0]}</p>
-      <p class="sectionSubInfo">Added by: ${listItems[key][2]}</p>
-    `;
-
-    document.querySelector("#listsEditPage").appendChild(itemDiv);
-    
-    itemDiv.addEventListener("click", async function() {
-      if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "check_box") {
-        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box_outline_blank"
-        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colNorm)"
-        itemDiv.setAttribute("itemState", false)
-        
-        document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
-
-        
-      } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "check_box_outline_blank") {
-        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box"
-        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colSuccess)"
-        itemDiv.setAttribute("itemState", true)
-        
-        document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
-
-        
-      } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "delete") {
-        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "delete_forever"
-        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colError)"
-
-        
-      } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "delete_forever") {
-        itemDiv.remove()
-        
-        document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
-        
-        var temp_itemAmount = Number(document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle").innerHTML
-          .replace(`<b>Total Items:</b> <span style="color: var(--colDimmed)">`, "")
-          .replace(` items</span>`, "")) - 1
-        document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle")
-          .innerHTML = `<b>Total Items:</b> <span style='color: var(--colDimmed)'>${temp_itemAmount} items</span>`
-        
-      }
-    })
-    
+    await LoadPage_ListsPage_NewItem(key, listItems[key])
   }
 
   document.querySelector("#listsEditPage").style.removeProperty("display")
@@ -393,6 +341,64 @@ async function LoadPage_ListsPage_LoadList(listID) {
   document.querySelector("#listsEditPage").setAttribute("listID", listID)
 
   await closeLoading();
+}
+
+async function LoadPage_ListsPage_NewItem(key, listItem) {
+  const itemDiv = document.createElement("div");
+  itemDiv.classList.add("section");
+  itemDiv.classList.add("listsPage-ItemDiv")
+  itemDiv.setAttribute("columnType", "3COL");
+  itemDiv.setAttribute("itemID", key);
+  itemDiv.setAttribute("itemState", listItem[1])
+
+  let checked = listItem[1] ? "check_box" : "check_box_outline_blank"
+  let colour = listItem[1] ? "var(--colSuccess)" : "var(--colNorm)"
+
+
+
+    itemDiv.innerHTML = `
+    <div class="listsPage-SmallIconButton" function="check" style="color: ${colour}"><i class="material-symbols-rounded">${checked}</i></div>
+    <p class="sectionPara">${listItem[0]}</p>
+    <p class="sectionSubInfo">Added by: ${listItem[2]}</p>
+  `;
+
+  document.querySelector("#listsEditPage").appendChild(itemDiv);
+
+  itemDiv.addEventListener("click", async function() {
+    if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "check_box") {
+      itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box_outline_blank"
+      itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colNorm)"
+      itemDiv.setAttribute("itemState", false)
+
+      document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
+
+
+    } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "check_box_outline_blank") {
+      itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box"
+      itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colSuccess)"
+      itemDiv.setAttribute("itemState", true)
+
+      document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
+
+
+    } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "delete") {
+      itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "delete_forever"
+      itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colError)"
+
+
+    } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "delete_forever") {
+      itemDiv.remove()
+
+      document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
+
+      var temp_itemAmount = Number(document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle").innerHTML
+        .replace(`<b>Total Items:</b> <span style="color: var(--colDimmed)">`, "")
+        .replace(` items</span>`, "")) - 1
+      document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle")
+        .innerHTML = `<b>Total Items:</b> <span style='color: var(--colDimmed)'>${temp_itemAmount} items</span>`
+
+    }
+  })
 }
 
 
@@ -403,184 +409,224 @@ async function LoadPage_ListsPage_LoadList(listID) {
 
 
 
-// -- > Lists Page > Items Page >  Switch Delete
+if (window.location.href.endsWith("/listsPage")) {
 
-document.querySelector("#listsEdit-deleteItemsButton").addEventListener("click", async function() {
-
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-saveListButton").style.display = "none"
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-createItemButton").style.display = "none"
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteItemsButton").style.display = "none"
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteListButton").style.display = "none"
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-confirmDeleteItemsButton").style.removeProperty("display")
-
-  for (const item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
-    item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "delete"
-    item.querySelectorAll(".listsPage-SmallIconButton")[0].style.removeProperty("color")
-  }
+  // -- > Lists Page > Items Page >  Switch Delete
   
-})
-
-document.querySelector("#listsEdit-confirmDeleteItemsButton").addEventListener("click", async function() {
-
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-saveListButton").style.removeProperty("display")
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-createItemButton").style.removeProperty("display")
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteItemsButton").style.removeProperty("display")
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteListButton").style.removeProperty("display")
-  document.querySelector("#listsEditPage").querySelector("#listsEdit-confirmDeleteItemsButton").style.display = "none"
-
-  for (var item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
-    if (item.getAttribute("itemState") == "true") {
-      item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box"
-      item.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colSuccess)"
-    } else {
-      item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box_outline_blank"
-      item.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colNorm)"
+  document.querySelector("#listsEdit-deleteItemsButton").addEventListener("click", async function() {
+  
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-saveListButton").style.display = "none"
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-createItemButton").style.display = "none"
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteItemsButton").style.display = "none"
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteListButton").style.display = "none"
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-confirmDeleteItemsButton").style.removeProperty("display")
+  
+    for (const item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
+      item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "delete"
+      item.querySelectorAll(".listsPage-SmallIconButton")[0].style.removeProperty("color")
     }
-  }
-
-})
-
-// -- > Lists Page > Items Page >  Save List
-
-document.querySelector("#listsEdit-saveListButton").addEventListener("click", async function() {
-
-  if (document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML == "save") {
-
-    var temp_itemsList = {}
+    
+  })
+  
+  document.querySelector("#listsEdit-confirmDeleteItemsButton").addEventListener("click", async function() {
+  
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-saveListButton").style.removeProperty("display")
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-createItemButton").style.removeProperty("display")
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteItemsButton").style.removeProperty("display")
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteListButton").style.removeProperty("display")
+    document.querySelector("#listsEditPage").querySelector("#listsEdit-confirmDeleteItemsButton").style.display = "none"
   
     for (var item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
-      var temp_ItemTitle = item.querySelectorAll(".sectionPara")[0]
-      var temp_AddedBy = item.querySelectorAll(".sectionSubInfo")[0].innerHTML.replace("Added by: ", "")
-      temp_itemsList[item.getAttribute("itemID")] = [temp_ItemTitle, item.getAttribute("itemState") == "true", temp_AddedBy]
+      if (item.getAttribute("itemState") == "true") {
+        item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box"
+        item.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colSuccess)"
+      } else {
+        item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box_outline_blank"
+        item.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colNorm)"
+      }
     }
   
-    await setDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")), temp_itemsList)
-
-  }
-
-  await openLoading();
-
-  document.querySelector("#listsDefault").style.removeProperty("display")
-  document.querySelector("#listsDefault").style.removeProperty("opacity")
-  document.querySelector("#listsEditPage").style.display = "none";
-  document.querySelector("#listsEditPage").style.opacity = "0";
-  document.querySelector("#listsEditPage").removeAttribute("listID")
-  document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML == "undo"
+  })
   
-  await closeLoading();
+  // -- > Lists Page > Items Page >  Save List
   
-})
-
-// -- > Lists Page > Items Page >  Create Item
-
-document.querySelector("#listsEdit-createItemButton").addEventListener("click", async function() {
-
-  await openLoading();
-
-  document.querySelector("#listsEditPage").style.display = "none";
-  document.querySelector("#listsEditPage").style.opacity = "0";
-  document.querySelector("#listsNewItemPage").style.removeProperty("display")
-  document.querySelector("#listsNewItemPage").style.removeProperty("opacity")
-
-  await closeLoading();
+  document.querySelector("#listsEdit-saveListButton").addEventListener("click", async function() {
   
-})
-
-// -- > Lists Page > Items Page >  Delete List
-
-document.querySelector("#listsEdit-deleteListButton").addEventListener("click", async function() {
-
-  if ( document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML == "contract_delete" ) {
-    document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML = "delete_forever"
-  } else if ( document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML == "delete_forever" ) {
-    await deleteDoc( doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")) )
-    await Refresh()
-  }
+    if (document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML == "save") {
   
-})
-
-// -- > Lists Page > Default >  New List
-
-document.querySelector("#listsDefault-createListButton").addEventListener("click", async function() {
-
-  await openLoading();
-
-  document.querySelector("#listsDefault").style.display = "none";
-  document.querySelector("#listsDefault").style.opacity = "0";
-  document.querySelector("#listsNewListPage").style.removeProperty("display")
-  document.querySelector("#listsNewListPage").style.removeProperty("opacity")
-
-  await closeLoading();
+      var temp_itemsList = {}
+    
+      for (var item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
+        var temp_ItemTitle = item.querySelectorAll(".sectionPara")[0]
+        var temp_AddedBy = item.querySelectorAll(".sectionSubInfo")[0].innerHTML.replace("Added by: ", "")
+        temp_itemsList[item.getAttribute("itemID")] = [temp_ItemTitle, item.getAttribute("itemState") == "true", temp_AddedBy]
+      }
+    
+      await setDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")), temp_itemsList)
   
-})
-
-// -- > Lists Page > New List >  Cancel List
-
-document.querySelector("#listsNewListPage-cancelNewList").addEventListener("click", async function() {
-
-  await openLoading();
-
-  document.querySelector("#listsDefault").style.removeProperty("display")
-  document.querySelector("#listsDefault").style.removeProperty("opacity")
-  document.querySelector("#listsNewListPage").style.display = "none";
-  document.querySelector("#listsNewListPage").style.opacity = "0";
-
-  document.querySelector("#listsNewListPage-TitleBox").value = ""
-
-  await closeLoading();
+    }
   
-})
-
-// -- > Lists Page > New List >  Add List
-
-document.querySelector("#listsNewListPage-addNewList").addEventListener("click", async function() {
-
-  await setDoc(doc(db, "lists", document.querySelector("#listsNewListPage-TitleBox").value), {})
-
-  await Refresh();
+    await openLoading();
   
-})
-
-// -- > Lists Page > New Item >  Cancel Item
-
-document.querySelector("#listsNewItemPage-cancelNewItem").addEventListener("click", async function() {
-
-  await openLoading();
-
-  document.querySelector("#listsEditPage").style.removeProperty("display")
-  document.querySelector("#listsEditPage").style.removeProperty("opacity")
-  document.querySelector("#listsNewItemPage").style.display = "none";
-  document.querySelector("#listsNewItemPage").style.opacity = "0";
-
-  document.querySelector("#listsNewItemPage-item").value = ""
-  document.querySelector("#listsNewItemPage-addedBy").value = ""
-
-  await closeLoading();
+    document.querySelector("#listsDefault").style.removeProperty("display")
+    document.querySelector("#listsDefault").style.removeProperty("opacity")
+    document.querySelector("#listsEditPage").style.display = "none";
+    document.querySelector("#listsEditPage").style.opacity = "0";
+    document.querySelector("#listsEditPage").removeAttribute("listID")
+    document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML == "undo"
+    
+    await closeLoading();
+    
+  })
   
-})
-
-// -- > Lists Page > New Item >  Add Item
-
-document.querySelector("#listsNewItemPage-addNewItem").addEventListener("click", async function() {
+  // -- > Lists Page > Items Page >  Create Item
+  
+  document.querySelector("#listsEdit-createItemButton").addEventListener("click", async function() {
+  
+    await openLoading();
+  
+    document.querySelector("#listsEditPage").style.display = "none";
+    document.querySelector("#listsEditPage").style.opacity = "0";
+    document.querySelector("#listsNewItemPage").style.removeProperty("display")
+    document.querySelector("#listsNewItemPage").style.removeProperty("opacity")
+  
+    if (localStorage.getItem("deviceUser") != null) {
+      document.querySelector("#listsNewItemPage-addedBy").value = localStorage.getItem("deviceUser")
+    }
+  
+    await closeLoading();
+    
+  })
+  
+  // -- > Lists Page > Items Page >  Delete List
+  
+  document.querySelector("#listsEdit-deleteListButton").addEventListener("click", async function() {
+  
+    if ( document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML == "contract_delete" ) {
+      document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML = "delete_forever"
+    } else if ( document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML == "delete_forever" ) {
+      await deleteDoc( doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")) )
+      await Refresh()
+    }
+    
+  })
+  
+  // -- > Lists Page > Default >  New List
+  
+  document.querySelector("#listsDefault-createListButton").addEventListener("click", async function() {
+  
+    await openLoading();
+  
+    document.querySelector("#listsDefault").style.display = "none";
+    document.querySelector("#listsDefault").style.opacity = "0";
+    document.querySelector("#listsNewListPage").style.removeProperty("display")
+    document.querySelector("#listsNewListPage").style.removeProperty("opacity")
+  
+    await closeLoading();
+    
+  })
+  
+  // -- > Lists Page > New List >  Cancel List
+  
+  document.querySelector("#listsNewListPage-cancelNewList").addEventListener("click", async function() {
+  
+    await openLoading();
+  
+    document.querySelector("#listsDefault").style.removeProperty("display")
+    document.querySelector("#listsDefault").style.removeProperty("opacity")
+    document.querySelector("#listsNewListPage").style.display = "none";
+    document.querySelector("#listsNewListPage").style.opacity = "0";
+  
+    document.querySelector("#listsNewListPage-TitleBox").value = ""
+  
+    await closeLoading();
+    
+  })
+  
+  // -- > Lists Page > New List >  Add List
+  
+  document.querySelector("#listsNewListPage-addNewList").addEventListener("click", async function() {
+  
+    await setDoc(doc(db, "lists", document.querySelector("#listsNewListPage-TitleBox").value), {})
+  
+    await Refresh();
+    
+  })
+  
+  // -- > Lists Page > New Item >  Cancel Item
+  
+  document.querySelector("#listsNewItemPage-cancelNewItem").addEventListener("click", async function() {
+  
+    await openLoading();
+  
+    document.querySelector("#listsEditPage").style.removeProperty("display")
+    document.querySelector("#listsEditPage").style.removeProperty("opacity")
+    document.querySelector("#listsNewItemPage").style.display = "none";
+    document.querySelector("#listsNewItemPage").style.opacity = "0";
+  
+    document.querySelector("#listsNewItemPage-item").value = ""
+    document.querySelector("#listsNewItemPage-addedBy").value = ""
+  
+    await closeLoading();
+    
+  })
+  
+  // -- > Lists Page > New Item >  Add Item
+  
+  document.querySelector("#listsNewItemPage-addNewItem").addEventListener("click", async function() {
+  
+    await updateDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")),
+                     { [document.querySelector("#listsNewItemPage-item").value]: [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value] }
+                     )
+  
+    await LoadPage_ListsPage_NewItem(document.querySelector("#listsNewItemPage-item").nodeValue,
+                                     [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value])
+  
+    await openLoading();
+  
+    document.querySelector("#listsEditPage").style.removeProperty("display")
+    document.querySelector("#listsEditPage").style.removeProperty("opacity")
+    document.querySelector("#listsNewItemPage").style.display = "none";
+    document.querySelector("#listsNewItemPage").style.opacity = "0";
+  
+    document.querySelector("#listsNewItemPage-item").value = ""
+    document.querySelector("#listsNewItemPage-addedBy").value = ""
+  
+    await closeLoading();
+    
+  })
+  
+  // -- > Lists Page > New Item >  Add More Items
+  
+  document.querySelector("#listsNewItemPage-addMoreItems").addEventListener("click", async function() {
 
   await updateDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")),
                    { [document.querySelector("#listsNewItemPage-item").value]: [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value] }
                    )
 
-  await Refresh();
-  
-})
-
-// -- > Lists Page > New Item >  Add More Items
-
-document.querySelector("#listsNewItemPage-addMoreItems").addEventListener("click", async function() {
-
-  await updateDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")),
-                   { [document.querySelector("#listsNewItemPage-item").value]: [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value] }
-                   )
+  await LoadPage_ListsPage_NewItem(document.querySelector("#listsNewItemPage-item").nodeValue,
+                                   [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value])
 
   document.querySelector("#listsNewItemPage-item").value = ""
-  document.querySelector("#listsNewItemPage-addedBy").value = ""
-  
   
 })
+
+}
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+
+
+
+if (window.location.href.endsWith("/settingsPage")) {
+  
+  // -- > Settings Page > Device User >  Save Device User
+  
+  document.querySelector("#settingsDefault-DeviceUserBox").addEventListener("change", async function() {
+  
+    localStorage.setItem("deviceUser", document.querySelector("#settingsDefault-DeviceUserBox").value)
+    
+  })
+  
+}
