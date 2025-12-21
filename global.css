@@ -2,6 +2,8 @@
 /* IMPORTS AND LOADING ////////////////////////////////////////////////////// */
 /* ////////////////////////////////////////////////////////////////////////// */
 
+
+
 @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Nunito:wght@200..1000&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
@@ -15,11 +17,36 @@
 }
 
 body {
-  background-color: #111;
-  height: 500vh;
+  background: var(--colMed);
+  height: 100vh;
   font-family: 'Russo One', sans-serif;
+  overflow: hidden;
+  transition: background-color 0.5s ease-in-out;
 }
 
+:root {
+  --colDark: #222;
+  --colSemiDark: #333;
+  --colMed: #444;
+  --colLight: #555;
+  --colDimmed: #bbb;
+  --colTheme: var(--colTHEME_DEFAULT);
+  --colNorm: #fff;
+
+  --colSuccess: #4CAF50;
+  --colError: #D32F2F;
+
+  --colTHEME_DEFAULT: #09f;
+  --colTHEME_SPOOKY1: #EB6122;
+  --colTHEME_SPOOKY2: #431C52;
+  --colTHEME_XMAS1: #009944;
+  --colTHEME_XMAS2: #bb0000;
+  --colTHEME_XMAS3: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
 
 
 
@@ -29,60 +56,24 @@ body {
 
 
 
+/* */
+
+
+
+/* ////////////////////////////////////////////////////////////////////////// */
+/* Loading /////////////////////////////////////////////////////////////////// */
+/* ////////////////////////////////////////////////////////////////////////// */
+
+
+
 .V1GLOBAL_LoadingDiv {
   position: fixed;
   height: 100vh;
   width: 100vw;
   background-color: #037;
-  transition: width 1s cubic-bezier(0.74, 0.1, 0.27, 0.83);
-  overflow: hidden;
-  z-index: 999999999999999;
-}
-
-.V1GLOBAL_DEVICE_SET {
-  display: none;
-  position: fixed;
-  height: 100vh;
-  width: 100vw;
-  background-color: #333;
-  transition: width 1s cubic-bezier(0.74, 0.1, 0.27, 0.83);
+  transition: width 0.75s cubic-bezier(0.74, 0.1, 0.27, 0.83);
   overflow: hidden;
   z-index: 999;
-}
-#V1GLOBAL_DEVICE_SET_DIV {
-  transform: translate(-50%, -50%);
-  position: absolute;
-  top: 50vh;
-  left: 50vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  background-color: #333;
-}
-#V1GLOBAL_DEVICE_SET_BUTTON_DIV {
-  display: flex;
-  width: 100vw;
-  justify-content: center;
-  gap: 10px;
-}
-@media only screen and (max-width: 768px) {
-  #V1GLOBAL_DEVICE_SET_BUTTON_DIV {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-
-#V1GLOBAL_DEVICE_SET_BUTTON {
-  padding: 15px;
-  width: 150px;
-  border-radius: 50px;
-  border: 2px solid #09f;
-  background: #444;
-  font-family: 'Russo One', sans-serif;
-  font-size: 20px;
-  color: #fff;
 }
 
 .V1GLOBAL_LoadingDiv .V1GLOBAL_Loader {
@@ -91,21 +82,21 @@ body {
   height: 6px;
   animation: spinner-xp626r 1.1s infinite;
   border-radius: 50%;
-  box-shadow: 24px 0 0 6px #0099ff, -24px 0 0 6px #0099ff;
+  box-shadow: 24px 0 0 6px var(--colTheme), -24px 0 0 6px var(--colTheme);
   top: 50vh;
   left: 50vw;
 }
 
 @keyframes spinner-xp626r {
- to {
-  transform: rotate(360deg);
- }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* Navbar //////////////////////////////////////////////////////////////////// */
+/* Navbar /////////////////////////////////////////////////////////////////// */
 /* ////////////////////////////////////////////////////////////////////////// */
 
 
@@ -113,48 +104,66 @@ body {
 .navbar {
   display: flex;
   position: fixed;
-  height: 100vh;
+  height: calc(100vh - 80px);
   width: 86px;
-  background-color: #222;
+  padding: 10px;
+  background-color: var(--colDark);
   transition: width 0.3s ease-in-out;
-  z-index: 10;
+  z-index: 997;
   flex-direction: column;
+  overflow-y: auto;
+}
+
+.navbarlow {
+  height: 80px !important;
+  bottom: 0%;
+  left: 0%;
+  width: inherit;
+  transition: none;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
 }
 
 .navbar .navbarTitle {
+  min-height: 44px;
   font-size: 30px;
-  color: #09f;
+  color: var(--colTheme);
   text-align: center;
-  padding-bottom: 10px;
-  border-bottom: 3px solid #09f;
-  margin: 10px;
+  padding-bottom: 5px;
+  margin-bottom: 7px;
+  border-bottom: 3px solid var(--colTheme);
+  user-select: none;
+  overflow-y: visible;
 }
 
 .navbar .navbarButton {
-  max-height: 50px;
-  background: #333;
-  color: #fff;
+  height: 50px;
+  min-height: 50px;
+  background: var(--colSemiDark);
+  color: var(--colNorm);
   padding: 5px;
   border-radius: 10px;
-  margin: 5px;
-  margin-left: 15px;
-  margin-right: 15px;
+  margin: 5px !important;
   transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out, margin 0.25s ease-in-out;
   display: flex;
   align-items: center;
   overflow: hidden;
-  border: 3px solid #555;
+  border: 3px solid var(--colLight);
   user-select: none;
+  cursor: pointer;
 }
 
 .navbar .active {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  background: #555;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background: var(--colLight);
+  color: var(--colTheme)
 }
 
 .navbar .icon {
-  color: #09f;
+  color: var(--colTheme);
   overflow: hidden;
   font-size: 40px !important;
   margin-right: 5px;
@@ -163,7 +172,7 @@ body {
 }
 
 .navbarButton p {
-  text-overflow: ellipsis;
+  text-overflow: clip;
   text-wrap-mode: nowrap;
   font-size: 1.25rem;
 }
@@ -176,7 +185,7 @@ body {
 
 
 
-.page { 
+.page {
   position: absolute;
   transition: opacity 0.3s ease-in-out;
 
@@ -186,121 +195,289 @@ body {
 
   left: 86px;
   padding: 15px;
-  padding-top: 100px;
+  padding-top: 98px;
 
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   align-content: flex-start;
-  gap: 9px;
+  gap: 10px;
 }
 
-.page .section {
-  /*min-height: 100px;*/
-  min-width: 100px;
-  background-color: #444;
-  border: 3px solid #333;
+/* -- > Sections CSS */
+
+.section {
+  width: 100%;
+  background-color: var(--colMed);
+  border: 3px solid var(--colSemiDark);
   border-radius: 15px;
   padding: 10px;
-  /*box-shadow: 0 0 10px #09f;*/
 }
 
-.page .EXCLhomePageSection {
-  flex: 1 1 49%;
-  min-width: 49% !important;
-  height: 24.5em
+.section[columnType="2COL"] {
+  flex: 1 1 49.4%;
+  min-width: 49.4% !important;
+  height: -webkit-fill-available;
 }
 
-.page .sectionGroup {
+.section[columnType="3COL"] {
+  flex: 1 1 32.64%;
+  min-width: 32.64% !important;
+  height: -webkit-fill-available;
+}
+
+.section[heightType="FULL"] {
+  height: calc(100vh - 113px) !important;
+}
+
+.section[heightType="HALF"] {
+  height: calc(50vh - 62px) !important;
+}
+
+.sectionGroup {
   display: flex;
   gap: 9px
 }
 
-.page .title {
+/* -- > Titles CSS */
+
+.title {
   position: fixed;
-  left: 86px;
   top: 0px;
-
+  left: 86px;
   width: calc(100vw - 86px);
-
   font-size: 50px;
-  color: #fff;
-  background: #444;
-
-  border-bottom: 3px solid #09f;
-
+  color: var(--colNorm);
+  background: var(--colMed);
+  border-bottom: 3px solid var(--colTheme);
   padding: 10px;
   padding-left: 20px;
-  margin-bottom: 10px;
+  overflow: clip;
+  text-overflow: ellipsis;
+  height: 82px;
 }
 
-.page .sectionTitle {
+.sectionTitle {
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  border-bottom: 2px solid var(--colTheme);
+  padding-bottom: 2px;
   font-size: 25px;
-  color: #fff;
+  color: var(--colNorm);
   margin-bottom: 5px;
-  width: auto;
-}
-.page .sectionPara {
-  font-family: 'Roboto', sans-serif;
-  font-size: 25px;
-  color: #ccc;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  width: auto;
-}
-
-.page .sectionPill {
-  font-family: 'Roboto', sans-serif;
-  font-size: 20px;
-  color: #fff;
-  display: inline-block;
-  border-radius: 50px;
-  padding: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  background: #555;
-  width: fit-content;
-}
-
-.page .sectionPillButton {
-  font-family: 'Roboto', sans-serif;
-  font-size: 15px;
-  color: #fff;
-  display: inline-block;
-  border-radius: 50px;
-  padding: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  background: #555;
-  width: fit-content;
-  height: fit-content;
-  float: right;
-  margin-right: 5px;
+  width: 100%;
   user-select: none;
 }
 
-.page .sectionPillButtonDiv {
+.sectionSubTitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: var(--colNorm);
+  margin-bottom: 5px;
+  width: auto;
+  user-select: none;
+}
+
+.sectionPara {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: var(--colDimmed);
+  margin-bottom: 5px;
+  margin-left: 5px;
+  width: auto;
+  user-select: none;
+}
+
+.sectionSubInfo {
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  color: var(--colDimmed);
+  margin-left: 5px;
+  width: auto;
+  user-select: none;
+}
+
+/* -- > Labels CSS */
+
+.sectionPill {
+  display: inline-block;
+  width: -webkit-fill-available;
+  height: fit-content;
+  background: var(--colSemiDark);
+  
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: var(--colNorm);
+  
+  border-radius: 20px;
+  border: 2px solid var(--colTheme);
+  
+  padding: 10px 20px;
+  margin-bottom: 10px;
+}
+
+.sectionPillButton {
+  display: inline-block;
+  width: -webkit-fill-available;
+  height: fit-content;
+  background: var(--colLight);
+
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: var(--colNorm);
+
+  border-radius: 50px;
+  border: 2px solid var(--colTheme);
+
+  padding: 10px 20px;
+  margin-bottom: 10px;
+}
+
+.sectionPillIconButton {
+  display: inline-block;
+  height: 49px;
+  background: var(--colLight);
+  
+  font-family: 'Roboto', sans-serif;
+  font-size: 25px;
+  color: var(--colNorm);
+  
+  border-radius: 100px;
+  border: 2px solid var(--colTheme);
+  
+  padding: 10px;
+  margin-bottom: 10px;
+
+  user-select: none;
+}
+
+.sectionPillButtonDiv {
   display: inline-block;
   float: right;
 }
+
+.sectionPillIconButtonDiv {
+  display: flex;
+  justify-content: space-around;
+}
+
+.sectionButton {
+  display: block;
+  width: -webkit-fill-available;
+  height: 45px;
+  background: var(--colSemiDark);
+  border: 3px solid var(--colDark);
+  border-radius: 50px;
+  margin: 5px;
+}
+
+.sectionTextBox {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: var(--colNorm);
+  background: #555;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  width: calc(100% - 20px);
+  height: 35px;
+  resize: none;
+  overflow: hidden;
+  white-space: pre-line;
+}
+
+.sectionToggle {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 35px;
+  margin: 8px;
+  font-family: 'Roboto', sans-serif;
+  border-radius: 50px;
+}
+
+.sectionToggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.sectionToggle .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--colLight);
+  border-radius: 5px;
+  transition: 0.4s;
+  border: none;
+}
+
+.sectionToggle .slider::before {
+  position: absolute;
+  content: "";
+  height: 27px;
+  width: 27px;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--colNorm);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.sectionToggle input:checked+.slider {
+  background-color: var(--colSuccess);
+}
+
+.sectionToggle input:checked+.slider::before {
+  transform: translateX(25px);
+}
+
+.sectionDateBox {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: var(--colNorm);
+  background: #555;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  width: calc(100% - 20px);
+  height: 35px;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: center;
+}
+
 /* Mobile override */
 @media only screen and (max-width: 768px) {
-  .page .sectionPill {
-    width: 100%;
+  .section {
+    width: 100% !important;
+    flex: 1 1 100% !important;
   }
-  .page .sectionPillButton {
-    width: 100%;
-    float: none;
-    margin-right: 0px;
-  }
-  .page .sectionPillButtonDiv {
-    display: inline-flex;
-    flex-direction: column-reverse;
-    gap: 5px;
-    width: 100%;
-    float: none;
-  }
+
+  #listsEdit-totalItemsTitle {  width: 100% !important;  margin-bottom: 10px !important;  }
+  #listsEdit-titleButtonsDiv {  display: flex !important;  }
+}
+
+
+/* Section Custom CSS */
+
+#listsEdit-totalItemsTitle {  width: calc(100% - 216px);  margin-bottom: 0;  }
+#listsEdit-titleButtonsDiv {  display: inline;  }
+#listsEdit-titleButtonsDiv .sectionPillIconButton {  margin-bottom: 0;  }
+
+.listsPage-SmallIconButton {
+  color: var(--colNorm);
+  overflow: clip;
+  float: left;
+  padding-top: 3px;
+  margin-right: 10px;
+  user-select: none;
 }
 
 
@@ -315,31 +492,37 @@ body {
   width: 100% !important;
   height: -webkit-fill-available;
 }
+
 .notesSection[columnType="2COL"] {
   flex: 1 1 49.5%;
   min-width: 49.5% !important;
   height: -webkit-fill-available;
 }
+
 .notesSection[columnType="3COL"] {
   flex: 1 1 32.75%;
   min-width: 32.75% !important;
   height: -webkit-fill-available;
 }
+
 /* Mobile override */
 @media only screen and (max-width: 768px) {
   .notesSection {
     width: 100% !important;
     height: -webkit-fill-available;
   }
+
   .notesSection[columnType="2COL"] {
     width: 100% !important;
     height: -webkit-fill-available;
   }
+
   .notesSection[columnType="3COL"] {
     width: 100% !important;
     height: -webkit-fill-available;
   }
 }
+
 /* Tablet override */
 /*@media (min-width: 768px) and (max-width: 1024px) {
   .notesSection {
@@ -362,14 +545,14 @@ body {
   font-family: 'Roboto', sans-serif;
   font-weight: bolder;
   font-size: 20px;
-  color: #fff;
+  color: var(--colNorm);
   margin: 5px;
 }
 
 .notesPara {
   font-family: 'Roboto', sans-serif;
   font-size: 15px;
-  color: #fff;
+  color: var(--colNorm);
   margin: 10px;
   white-space: pre-line;
 }
@@ -381,7 +564,7 @@ body {
 }
 
 .notesButton {
-  color: #fff;
+  color: var(--colNorm);
   overflow: clip;
   float: right;
   margin-right: 5px;
@@ -390,7 +573,7 @@ body {
 
 .notesTextBox {
   font-size: 20px;
-  color: #fff;
+  color: var(--colNorm);
   background: #555;
   border: none;
   border-radius: 5px;
@@ -404,7 +587,8 @@ body {
 
 .notesClampedText {
   display: -webkit-box;
-  -webkit-line-clamp: 5;            /* 👈 limits to 5 lines */
+  -webkit-line-clamp: 5;
+  /* 👈 limits to 5 lines */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -414,6 +598,7 @@ body {
   display: flex;
   justify-content: space-around;
 }
+
 /* Mobile override */
 @media only screen and (max-width: 768px) {
   #EXCLnotesPagePersonButtons {
