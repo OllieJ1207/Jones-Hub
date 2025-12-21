@@ -89,85 +89,20 @@
 
 
 
-  <div class="page" id="listsDefault" style="flex-direction: row;">
+  <div class="page" id="settingsDefault" style="flex-direction: row;">
     
-    <p class="title">Lists</p>
+    <p class="title">Settings</p>
     
     <div class="section" style="width: 100%;">
 
-      <div class="sectionPill" id="listsDefault-totalListsTitle" style="margin-bottom: 0; width: calc(100% - 59px);"><b>Total Lists:</b> 0 lists</div>
-      <div class="sectionPillIconButton" id="listsDefault-createListButton" style="margin-bottom: 0;">
-        <i class="material-symbols-rounded icon" style="font-size: inherit;">assignment_add</i>
-      </div>
+      <div class="sectionTitle" id="settingsDefault-DeviceUserTitle">Device User</div>
+
+        <p class="notesTitle">Enter the Device User:</p>
+        <textarea class="notesPara notesTextBox" id="settingsDefault-DeviceUserBox" type="text" value=""></textarea>
+      
 
     </div>
     
-  </div>
-
-  <div class="page" id="listsNewListPage" style="opacity: 0; display: none; flex-direction: row;">
-    <p class="title">Lists</p>
-    <div class="section" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-      <div>
-        <p class="sectionTitle" style="display: inline-block;">New List Form</p>
-        <p class="sectionTitle" id="listsNewListPageError"
-          style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
-        <div class="sectionPillButtonDiv">
-          <div class="sectionPillButton" id="listsNewListPageCancelListButton" style="border: 2px solid #ff0;">Cancel List</div>
-          <div class="sectionPillButton" id="listsNewListPageCreateListButton" style="border: 2px solid #0f0;">Create List</div>
-        </div>
-      </div>
-
-      <p class="notesTitle">List Title:</p>
-      <textarea class="notesPara notesTextBox" id="listsNewListPageTitleBox" type="text" value=""></textarea>
-    </div>
-  </div>
-
-  <div class="page" id="listsNewItemPage" style="opacity: 0; display: none; flex-direction: row;">
-    <p class="title">Lists</p>
-    <div class="section" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-
-      <div>
-        <p class="sectionTitle" style="display: inline-block;">New Item Form</p>
-        <p class="sectionTitle" id="listsNewItemPageError"
-          style="display: inline-block; padding-left: 10px; font-family: 'Roboto', sans-serif; color: #f55;"></p>
-        <div class="sectionPillButtonDiv">
-          <div class="sectionPillButton" id="listsNewItemPageCancelItemButton" style="border: 2px solid #f00;">Cancel Item</div>
-          <div class="sectionPillButton" id="listsNewItemPageAddMoreButton" style="border: 2px solid #0f0;">Add Item & More</div>
-          <div class="sectionPillButton" id="listsNewItemPageAddItemButton" style="border: 2px solid #0f0;">Add Item</div>
-        </div>
-      </div>
-
-      <p class="notesTitle">Item Title:</p>
-      <textarea class="notesPara notesTextBox" id="listsNewItemPageTitleBox" type="text" value=""></textarea>
-    </div>
-  </div>
-
-  <div class="page" id="listsEditPage" style="opacity: 0; display: none; flex-direction: row;">
-    <p class="title">Lists</p>
-    <div class="section" style="width: 100%; min-height: min-content;">
-      <div class="sectionPill" id="listsPageTotalItems"><b>Total Items:</b> 0 items</div>
-
-      <div class="sectionPillIconButtonDiv" style="">
-      
-        <div class="sectionPillIconButton" id="listsDefault-createListButton" style="">
-          <i class="material-symbols-rounded icon" style="font-size: inherit;">save</i>
-        </div>
-  
-        <div class="sectionPillIconButton" id="listsDefault-createListButton" style="">
-          <i class="material-symbols-rounded icon" style="font-size: inherit;">add_2</i>
-        </div>
-  
-        <div class="sectionPillIconButton" id="listsDefault-createListButton" style="border-color: var(--colError);">
-          <i class="material-symbols-rounded icon" style="font-size: inherit;">delete_sweep</i>
-        </div>
-  
-        <div class="sectionPillIconButton" id="listsDefault-createListButton" style="border-color: var(--colError);">
-          <i class="material-symbols-rounded icon" style="font-size: inherit;">contract_delete</i>
-        </div>
-
-      </div>
-    </div>
-
   </div>
 
 
