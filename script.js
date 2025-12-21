@@ -1,5 +1,19 @@
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- IMPORTS ///////////////////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getFirestore, doc, collection, setDoc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, Timestamp, increment, deleteField } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- FIREBASE //////////////////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOuvYnU3JEVwsFe1h17-JtLVkXjFYENkE",
@@ -14,6 +28,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- EVENTS AND TIMESTAMPS /////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
 const options = {
   weekday: 'long',
   year: 'numeric',
@@ -26,18 +48,34 @@ const options = {
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
 const events = [
-  {name: "Rick", date: "1982-08-16", emoji: "🎂"},
-  {name: "Anna", date: "1982-08-22", emoji: "🎂"},
-  {name: "Ollie", date: "2007-12-03", emoji: "🎂"},
-  {name: "Harry", date: "2010-06-25", emoji: "🎂"},
-  {name: "Charlotte", date: "2017-04-12", emoji: "🎂"},
-  {name: "Halloween", date: "2000-10-31", emoji: "🎃"},
-  {name: "Christmas", date: "2000-12-25", emoji: "🎅"},
+  { name: "Rick", date: "1982-08-16", emoji: "🎂" },
+  { name: "Anna", date: "1982-08-22", emoji: "🎂" },
+  { name: "Ollie", date: "2007-12-03", emoji: "🎂" },
+  { name: "Harry", date: "2010-06-25", emoji: "🎂" },
+  { name: "Charlotte", date: "2017-04-12", emoji: "🎂" },
+  { name: "Halloween", date: "2000-10-31", emoji: "🎃" },
+  { name: "Christmas", date: "2000-12-25", emoji: "🎅" },
 ];
 
 
-const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
-var changingPages = false
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- OTHER VARS ////////////////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
+const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+var changingPages = false;
+var pagesLoadingTime = 800;
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- FUNCTIONS /////////////////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
 
 function getDeviceByScreen() {
   const width = window.innerWidth;
@@ -47,27 +85,183 @@ function getDeviceByScreen() {
   return "Desktop";
 }
 
-function getDaysUntilBirthday(birthdayStr) {
+function getDaysUntilEvent(eventStr) {
   const today = new Date();
-  const [year, month, day] = birthdayStr.split("-").map(Number);
+  const [year, month, day] = eventStr.split("-").map(Number);
 
-  const thisYearBirthday = new Date(today.getFullYear(), month - 1, day);
-  const nextBirthday =
-    thisYearBirthday < today
+  const thisYearEvent = new Date(today.getFullYear(), month - 1, day - 1);
+  const nextEvent =
+    thisYearEvent < today
       ? new Date(today.getFullYear() + 1, month - 1, day)
-      : thisYearBirthday;
+      : thisYearEvent;
 
-  const diffTime = nextBirthday - today;
+  const diffTime = nextEvent - today;
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
+async function goToPage(page) {
+  await openLoading();
+  window.location.href = page;
+  return;
+}
+
+async function openLoading() {
+  document.querySelector(".V1GLOBAL_LoadingDiv").style.width = "100vw";
+  await wait(pagesLoadingTime);
+  return;
+}
+
+async function closeLoading() {
+  document.querySelector(".V1GLOBAL_LoadingDiv").style.width = "0vw";
+  await wait(pagesLoadingTime);
+  return;
+}
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- LOCK ORIENTATION //////////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
+document.documentElement.requestFullscreen().then(() => {
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock("portrait").catch(function (error) {
+      console.warn("Orientation lock failed:", error);
+    });
+  }
+});
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- ON PAGE LOAD //////////////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
 document.addEventListener("DOMContentLoaded", async function (event) {
 
-  //next event
+
+  // -- > Hide disabled navbar buttons.
+  document.querySelectorAll('.navbarButton').forEach(button => {
+    if (button.classList.contains("navbarButtonDisabled")) {
+      button.style.display = "none"
+    }
+  })
+
+
+  // -- > Load the home page
+  if (window.location.href.endsWith("/")) {
+    await LoadPage_HomePage_LoadEvents()
+  } else if (window.location.href.endsWith("/listsPage")) {
+    await LoadPage_ListsPage_LoadLists()
+  }
+  
+
+  // -- > Close loading screen
+  await wait(pagesLoadingTime)
+  await closeLoading();
+  
+})
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- NAVBAR FUNCTIONS //////////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
+document.getElementById("navbarButtonOpen").addEventListener("click", async function() {
+  if (document.getElementById("navbarButtonOpen").getAttribute("state") == "closed") {
+
+    document.getElementById("navbarButtonOpen").setAttribute("state", "changing")
+    document.getElementById("navbarButtonOpen").classList.add("active")
+    document.getElementById("navbarButtonOpenIcon").style.transform = "rotate(180deg)"
+    document.querySelectorAll(".navbar")[0].style.width = "225px"
+
+    await wait(310)
+
+    document.querySelectorAll(".navbarTitle")[0].innerHTML = "JONES HUB"
+    document.getElementById("navbarButtonOpen").setAttribute("state", "open")
+
+
+  } else {
+
+    document.getElementById("navbarButtonOpen").setAttribute("state", "changing")
+    document.getElementById("navbarButtonOpen").classList.remove("active")
+    document.getElementById("navbarButtonOpenIcon").style.transform = "rotate(0deg)"
+
+    document.querySelectorAll(".navbarTitle")[0].innerHTML = "HUB"
+    document.querySelectorAll(".navbar")[0].style.width = "86px"
+
+    await wait(310)
+
+    document.getElementById("navbarButtonOpen").setAttribute("state", "closed")
+  }
+});
+
+document.querySelectorAll('.navbarButton').forEach(button => {
+  button.addEventListener('click', async function() {
+    if (button.id !== "navbarButtonOpen") {
+      
+      if (button.getAttribute("page").startsWith("function:")) {
+
+        if (AllFunctions[button.getAttribute("page").replace("function:", "")]) {
+
+          if ([  ].includes(button.getAttribute("page").replace("function:", ""))) {
+            await AllFunctions[button.getAttribute("page").replace("function:", "")](button.parentElement.parentElement.getAttribute("orderID"));
+          } else {
+            await AllFunctions[button.getAttribute("page").replace("function:", "")]();
+          }
+
+        } else {
+          console.error("Function not found: " + button.getAttribute("page").replace("function:", ""));
+        }
+
+      } else {
+        if (changingPages) return;
+        changingPages = true;
+        await goToPage(button.getAttribute("page"))
+      }
+      
+    }
+  })
+});
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- SELECT PAGE BUTTONS ///////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
+const AllFunctions = { Refresh }
+
+
+async function Refresh() {
+  await openLoading();
+  window.location.reload();
+}
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- LOAD PAGE FUNCTIONS ///////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
+// -- > Load Home Pages Events
+
+async function LoadPage_HomePage_LoadEvents() {
   const sortedEvents = events
-    .map(event => ({
+    .map(event => ({  
       ...event,
-      daysUntil: getDaysUntilBirthday(event.date)
+      daysUntil: getDaysUntilEvent(event.date)
     }))
     .sort((a, b) => a.daysUntil - b.daysUntil)
     .filter(event => event.daysUntil >= 0)
@@ -75,486 +269,318 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   var stringDate = sortedEvents[0].date.split("-")
   stringDate = stringDate[2] + " " + months[stringDate[1] - 1]
 
-  document.querySelector("#homePageEventsText").innerHTML = sortedEvents[0].name + " in " + sortedEvents[0].daysUntil + " days <p style='font-size: 15px; display: inline-block'> (" + stringDate + ")</p>"
-  document.querySelector("#homePageEventsTitle").innerHTML = sortedEvents[0].emoji +" Next Event: "
+  var titleText = sortedEvents[0].emoji + " Next Event: "
+  var eventText = sortedEvents[0].name + " in " + sortedEvents[0].daysUntil + " days <p style='font-size: 15px; display: inline-block'> (" + stringDate + ")</p>"
+
   if (sortedEvents[0].daysUntil == 0) {
-    document.querySelector("#homePageEventsText").innerHTML = sortedEvents[0].name + " today!"
+    eventText = sortedEvents[0].name + " today!"
   } else if (sortedEvents[0].daysUntil < 7) {
-    document.querySelector("#homePageEventsTitle").innerHTML = "⌛ Next Event: "
-  }
-  
-
-
-  if (localStorage.getItem("deviceUser") == null) {
-    document.querySelector(".V1GLOBAL_DEVICE_SET").style.display = "flex"
-    document.querySelectorAll("#V1GLOBAL_DEVICE_SET_BUTTON").forEach(button => {
-      button.addEventListener("click", async function () {
-        localStorage.setItem("deviceUser", button.innerHTML)
-        document.querySelector(".V1GLOBAL_DEVICE_SET").style.width = "0vw"
-      })
-    })
-  }
-  
-  await wait(1000);
-  document.querySelector('.V1GLOBAL_LoadingDiv').style.width = '0vw';
-  
-})
-
-document.getElementById("navbarButtonOpen").addEventListener("click", async function () {
-  if (document.getElementById("navbarButtonOpen").getAttribute("state") == "closed") {
-    
-    document.getElementById("navbarButtonOpen").setAttribute("state", "changing")
-    document.getElementById("navbarButtonOpen").classList.add("active")
-    document.getElementById("navbarButtonOpenIcon").style.transform = "rotate(180deg)"
-    document.getElementById("navbar").style.width = "225px"
-    
-    await wait(310)
-    
-    /*const buttons = document.querySelectorAll('.navbarButton');
-    buttons.forEach(button => {
-      if (button.id !== "navbarButtonOpen") {
-        button.querySelector(".icon").style.marginRight = "5px";
-        button.querySelector(".navbarButtonText").style.display = "block";
-      }
-    });*/
-    
-    document.getElementById("navbarTitle").innerHTML = "JONES HUB"
-    document.getElementById("navbarButtonOpen").setAttribute("state", "open")
-
-    
-  } else {
-
-    
-    document.getElementById("navbarButtonOpen").setAttribute("state", "changing")
-    document.getElementById("navbarButtonOpen").classList.remove("active")
-    document.getElementById("navbarButtonOpenIcon").style.transform = "rotate(0deg)"
-    
-    /*const buttons = document.querySelectorAll('.navbarButton');
-    buttons.forEach(button => {
-      if (button.id !== "navbarButtonOpen") {
-        button.querySelector(".icon").style.marginRight = "0px";
-        button.querySelector(".navbarButtonText").style.display = "none";
-      } 
-    });*/
-    
-    document.getElementById("navbarTitle").innerHTML = "HUB"
-    document.getElementById("navbar").style.width = "86px"
-    
-    await wait(310)
-    
-    document.getElementById("navbarButtonOpen").setAttribute("state", "closed")
-  }
-});
-
-document.querySelectorAll('.navbarButton').forEach(button => {
-  button.addEventListener('click', async function () {
-    if (button.id !== "navbarButtonOpen") {
-      if (button.getAttribute('page').startsWith("function:")) {
-
-        if (button.getAttribute('page') == "function:Refresh") {
-          window.location.reload()
-        }
-        
-      } else {
-        await goPage(button.getAttribute('page'))
-      }
-    }
-  })
-});
-
-
-
-async function load_page(page) {
-  const deviceType = getDeviceByScreen()
-
-  ///// NOTES PAGE /////
-  if (page == "notesPage") {
-    const notesRef = collection(db, "notes");
-    const notesDocs = await getDocs(notesRef);
-
-    var notes = {}
-
-    notesDocs.forEach((doc) => {
-      if (doc.id == "global") {
-        const data = doc.data();
-        document.querySelector("#notesPageTotalNotes").innerHTML = `<b>Total Notes:</b> ${data["total_notes"]} notes`
-      } else {
-        if (document.querySelector("#notesPage .notesSection[note_id='" + doc.id + "']") == null) {
-          notes[doc.id] = doc.data();
-        }
-      }
-    });
-
-    for ( const key in notes ) { 
-
-      const note = document.createElement("div");
-      note.classList.add("section");
-      note.classList.add("notesSection");
-      note.setAttribute("note_id", key)
-      note.setAttribute("columnType", "3COL")
-
-      const added_time_timestamp = notes[key]["added_time"].toDate();
-      const added_time_string = added_time_timestamp.toLocaleString('en-GB', options).split(', ');
-
-      note.innerHTML = `<p class="notesTitle">${notes[key]["title"]}</p>
-      <div class="notesButton" function="edit"><i class="material-symbols-rounded">edit_square</i></div>
-      <div class="notesPara notesClampedText">${notes[key]["note"]}</div>
-      <p class="notesSubInfo">Created by: <b>${notes[key]["added_by"]}</b> on <b>${added_time_string}</b></p>`
-
-      document.getElementById("notesPage").appendChild(note);
-
-      note.querySelectorAll(".notesButton").forEach(button => {
-        button.addEventListener("click", async function () {
-          //const functionType = button.getAttribute("function");
-          //if (functionType == "edit") {
-          document.querySelector("#editNotesPage").setAttribute("note_id", key)
-          document.querySelector("#editNotesPageTitleBox").value = note.querySelectorAll(".notesTitle")[0].innerHTML
-          document.querySelector("#editNotesPageDescBox").value = note.querySelectorAll(".notesPara")[0].innerHTML
-          document.getElementById("editNotesPageError").innerHTML = ""
-          document.getElementById("editNotesPageDeleteNoteButton").innerHTML = "Delete Note"
-          await goPage("editNotesPage")
-          //}
-        })
-      })
-      
-    }
-    
-  } else if (page == "listsPage") {
-    const notesDocs = await getDocs(collection(db, "lists"));
-    document.querySelector("#listsPageTotalLists").innerHTML = `<b>Total Lists:</b> ${notesDocs.size} lists`
-
-    document.querySelectorAll("#listsPage .notesSection").forEach(section => {section.remove()})
-
-    notesDocs.forEach((doc) => {
-      if (document.querySelector(`#listsPage .notesSection[list_id='${doc.id}']`) == null) {
-
-        const note = document.createElement("div");
-        note.classList.add("section");
-        note.classList.add("notesSection");
-        note.style.display = "inline-flex"
-        note.style.minHeight = "min-content"
-        note.setAttribute("list_id", doc.id)
-        note.setAttribute("columnType", "3COL")
-
-        note.innerHTML = `<p class="notesTitle">${doc.id}</p>
-        <div class="notesButton" function="edit" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">expand_circle_right</i></div>`
-
-        document.getElementById("listsPage").appendChild(note);
-
-        note.querySelectorAll(".notesButton").forEach(button => {
-          button.addEventListener("click", async function () {
-            document.querySelector("#listsEditPage").setAttribute("list_id", doc.id)
-            document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
-            await goPage("listsEditPage")
-          })
-        })
-        
-      }
-    });
-  } else if (page == "listsEditPage") {
-    const list_id = document.querySelector("#listsEditPage").getAttribute("list_id")
-    const notesDocs = await getDoc(doc(db, "lists", list_id));
-
-    if (!notesDocs.exists()) {
-      await wait(310)
-      await goPage("listsPage")
-    } else {
-
-      const data = notesDocs.data();
-      document.querySelector("#listsPageTotalItems").innerHTML = `<b>Total Items:</b> ${Object.keys(data).length} items`
-  
-      document.querySelectorAll("#listsEditPage .notesSection").forEach(section => {section.remove()})
-  
-      for (const key in data) {
-    
-        const note = document.createElement("div");
-        note.classList.add("section");
-        note.style.display = "inline-flex"
-        note.classList.add("notesSection");
-        note.style.minHeight = "min-content"
-        note.setAttribute("list_id", doc.id)
-        note.setAttribute("columnType", "3COL")
-  
-        let checked = data[key] ? "check_box" : "check_box_outline_blank"
-  
-        note.innerHTML = `<div class="notesButton" function="check" style="padding-top: 5px"><i class="material-symbols-rounded">${checked}</i></div>
-        <p class="notesTitle">${key}</p>
-        <div class="notesButton" function="delete" style="padding-top: 5px; margin-left: auto;"><i class="material-symbols-rounded">delete</i></div>`
-  
-        document.getElementById("listsEditPage").appendChild(note);
-  
-        note.querySelectorAll(".notesButton").forEach(button => {
-          button.addEventListener("click", async function () {
-            const functionType = button.getAttribute("function");
-            if (functionType == "check") {
-              if (button.querySelector("i").innerHTML == "check_box_outline_blank") {
-                button.querySelector("i").innerHTML = "check_box"
-                // await updateDoc(doc(db, "lists", list_id), {[key]: true})
-              } else {
-                button.querySelector("i").innerHTML = "check_box_outline_blank"
-                // await updateDoc(doc(db, "lists", list_id), {[key]: false})
-              }
-  
-            } else if (functionType == "delete") {
-              if (button.querySelector("i").innerHTML == "delete") {
-                button.querySelector("i").innerHTML = "delete_forever"
-              } else {
-                // await updateDoc(doc(db, "lists", list_id), {[key]: deleteField()})
-                note.remove()
-              }
-            }
-          })
-        })
-
-      }
-
-    }
+    titleText = "⌛ Next Event: "
   }
 
-
-
-  /////
-
-
-  
+  document.querySelector("#homeDefault").querySelector("#homeDefault-nextEventTitle").innerHTML = titleText
+  document.querySelector("#homeDefault").querySelector("#homeDefault-nextEventText").innerHTML = eventText
 }
 
 
-document.getElementById("editNotesPageConfirmNoteButton").addEventListener('click', async function () {
+// -- > Load Lists Page
 
-  const note_id = document.querySelector("#editNotesPage").getAttribute("note_id")
-  await updateDoc(doc(db, "notes", note_id), {
-    title: document.getElementById("editNotesPageTitleBox").value,
-    note: document.getElementById("editNotesPageDescBox").value
-  })
+async function LoadPage_ListsPage_LoadLists() {
+  const lists = await getDocs(collection(db, "lists"));
 
-  document.querySelector(".notesPage .notesSection[note_id='" + note_id + "']").querySelectorAll(".notesTitle")[0].innerHTML = document.getElementById("editNotesPageTitleBox").value
-  document.querySelector(".notesPage .notesSection[note_id='" + note_id + "']").querySelectorAll(".notesPara")[0].innerHTML = document.getElementById("editNotesPageDescBox").value
+  document.querySelector("#listsDefault").querySelector("#listsDefault-totalListsTitle").innerHTML = "<b>Total Lists:</b> <span style='color: var(--colDimmed)'>" + lists.size + " lists</span>"
 
-  await goPage("notesPage")
-  
-})
-
-document.getElementById("editNotesPageCancelNoteButton").addEventListener('click', async function () {
-  await goPage("notesPage")
-})
-
-document.getElementById("editNotesPageDeleteNoteButton").addEventListener('click', async function () {
-  if (document.getElementById("editNotesPageDeleteNoteButton").innerHTML == "Delete Note") {
-    document.getElementById("editNotesPageDeleteNoteButton").innerHTML = "Confirm Delete"
-    document.getElementById("editNotesPageError").innerHTML = "Are you sure?"
-  } else if (document.getElementById("editNotesPageDeleteNoteButton").innerHTML == "Confirm Delete") {
-    const note_id = document.querySelector("#editNotesPage").getAttribute("note_id")
-    await deleteDoc(doc(db, "notes", note_id))
-    await updateDoc(doc(db, "notes", "global"), {"total_notes": increment(-1)})
-    document.querySelector(".notesSection[note_id='" + note_id + "']").remove()
-    await goPage("notesPage")
-  }
-})
-
-
-document.getElementById("notesPageCreateNoteButton").addEventListener('click', async function () {
-  document.getElementById("newNotesPageTitleBox").value = ""
-  document.getElementById("newNotesPageDescBox").value = ""
-  document.getElementById("newNotesPageError").innerHTML = ""
-  document.getElementById("EXCLnotesPagePersonButtons").style.display = "flex"
-  document.getElementById("EXCLnotesPagePersonTitle").style.display = "inline-block"
-  document.querySelectorAll('#newNotesPagePersonButton').forEach(button => {
-    button.style.backgroundColor = "#555"
-  })
-  if (localStorage.getItem("deviceUser") != null) {
-    document.getElementById("EXCLnotesPagePersonButtons").style.display = "none";
-    document.getElementById("EXCLnotesPagePersonTitle").style.display = "none";
-  }
-  await goPage("newNotesPage")
-})
-
-document.getElementById("newNotesPageConfirmNoteButton").addEventListener('click', async function () {
-  const buttons = document.querySelectorAll('#newNotesPagePersonButton');
-  var added_by = ""
-  if (localStorage.getItem("deviceUser") != null) {
-    added_by = localStorage.getItem("deviceUser")
-  }
-  buttons.forEach(button => {
-    if (button.style.backgroundColor == "rgb(119, 119, 119)") {
-      added_by = button.innerHTML
-    }
-  })
-  if (added_by == "") {
-    document.getElementById("newNotesPageError").innerHTML = "Please select a person."
-    return
-  } else {
-    if (document.getElementById("newNotesPageTitleBox").value == "" || document.getElementById("newNotesPageDescBox").value == "") {
-      document.getElementById("newNotesPageError").innerHTML = "Please fill in all boxes."
-      return
-    }
-    await addDoc(collection(db, "notes"), {
-      title: document.getElementById("newNotesPageTitleBox").value,
-      note: document.getElementById("newNotesPageDescBox").value,
-      added_by: added_by,
-      added_time: Timestamp.now()
-    })
-    await updateDoc(doc(db, "notes", "global"), {"total_notes": increment(1)})
-    await goPage("notesPage")
-  }
-})
-
-document.getElementById("newNotesPageCancelNoteButton").addEventListener('click', async function () {
-  await goPage("notesPage")
-})
-
-document.querySelectorAll("#newNotesPagePersonButton").forEach(thisButton => {
-  thisButton.addEventListener('click', async function () {
-    document.querySelectorAll('#newNotesPagePersonButton').forEach(button => {
-      button.style.backgroundColor = "#555"
-    })
-    thisButton.style.backgroundColor = "#777"
-  })
-});
-
-
-
-document.getElementById("listsPageCreateListButton").addEventListener('click', async function () {
-  document.getElementById("listsNewListPageError").innerHTML = ""
-  await goPage("listsNewListPage")
-})
-document.getElementById("listsEditPageCreateItemButton").addEventListener('click', async function () {
-  document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
-  document.getElementById("listsNewItemPageError").innerHTML = ""
-  await goPage("listsNewItemPage")
-})
-document.getElementById("listsEditPageDeleteListButton").addEventListener('click', async function () {
-  if (document.getElementById("listsEditPageDeleteListButton").innerHTML == "Delete List") {
-    document.getElementById("listsEditPageDeleteListButton").innerHTML = "Confirm Delete"
-  } else if (document.getElementById("listsEditPageDeleteListButton").innerHTML == "Confirm Delete") {
-    await deleteDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id")));
-    document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
-    document.querySelector("#listsPage .notesSection[list_id='" + document.querySelector("#listsEditPage").getAttribute("list_id") + "']").remove()
-    document.querySelector("#listsEditPage").setAttribute("list_id", "")
-    await goPage("listsPage")
-  }
-})
-document.getElementById("listsNewListPageCancelListButton").addEventListener('click', async function () {
-  document.querySelector("#listsNewListPageTitleBox").value = ""
-  await goPage("listsPage")
-})
-document.getElementById("listsNewListPageCreateListButton").addEventListener('click', async function () {
-  const buttons = document.querySelectorAll('#newListPagePersonButton');
-  var added_by = ""
-  buttons.forEach(button => {
-    if (button.style.backgroundColor == "rgb(119, 119, 119)") {
-      added_by = button.innerHTML
-    }
-  })
-  var listTitle = document.getElementById("listsNewListPageTitleBox").value
-  if (listTitle == "") {
-    document.getElementById("listsNewListPageError").innerHTML = "Please fill in all boxes."
-  } else {
-    document.getElementById("listsNewListPageError").innerHTML = ""
-    listTitle = listTitle.replace(/[^a-zA-Z\s]/g, "")
-    await setDoc(doc(db, "lists", listTitle), {});
-    document.querySelector("#listsNewListPageTitleBox").value = ""
-    await goPage("listsPage")
-  }
-})
-document.getElementById("listsNewItemPageCancelItemButton").addEventListener('click', async function () {
-  document.querySelector("#listsNewItemPageTitleBox").value = ""
-  await goPage("listsEditPage")
-})
-document.getElementById("listsNewItemPageAddMoreButton").addEventListener('click', async function () {
-  const listsRef = doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id"))
-  const listsDoc = await getDoc(listsRef)
-  if (listsDoc.exists()) {
-    if (document.querySelector("#listsNewItemPageTitleBox").value == "") {
-      document.getElementById("listsListNewItemPageError").innerHTML = "Please fill in all boxes."
-    } else {
-      var listsData = listsDoc.data()
-      var itemValue = document.getElementById("listsNewItemPageTitleBox").value
-
-      listsData[itemValue] = false
-      console.log(listsData)
-      await updateDoc(listsRef, listsData)
-
-      document.querySelector("#listsNewItemPageTitleBox").value = ""
-    }
-  } else {
-    document.getElementById("listsListNewItemPageError").innerHTML = "Error: List not found."
-  }
-})
-document.getElementById("listsNewItemPageAddItemButton").addEventListener('click', async function () {
-  const listsRef = doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id"))
-  const listsDoc = await getDoc(listsRef)
-  if (listsDoc.exists()) {
-    if (document.querySelector("#listsNewItemPageTitleBox").value == "") {
-      document.getElementById("listsListNewItemPageError").innerHTML = "Please fill in all boxes."
-    } else {
-      var listsData = listsDoc.data()
-      var itemValue = document.getElementById("listsNewItemPageTitleBox").value
-  
-      listsData[itemValue] = false
-      await updateDoc(listsRef, listsData)
-      
-      document.querySelector("#listsNewItemPageTitleBox").value = ""
-      await goPage("listsEditPage")
-    }
-  } else {
-    document.getElementById("listsListNewItemPageError").innerHTML = "Error: List not found."
-  }
-})
-document.getElementById("listsBackButton").addEventListener('click', async function () {
-  var newList = {}
-  document.querySelectorAll("#listsEditPage .notesSection").forEach(section => {
-    const title = section.querySelector(".notesTitle").innerHTML
-    const checked = section.querySelector(".notesButton[function='check'] i").innerHTML == "check_box" ? true : false
-    newList[title] = checked
-  })
-  console.log(newList)
-  await setDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id")), newList);
-  document.getElementById("listsEditPageDeleteListButton").innerHTML = "Delete List"
-  document.getElementById("listsEditPageDeleteItemsButton").innerHTML = "Delete All Items"
-  await goPage("listsPage")
-})
-document.getElementById("listsEditPageDeleteItemsButton").addEventListener('click', async function () {
-  if (document.getElementById("listsEditPageDeleteItemsButton").innerHTML == "Delete All Items") {
-    document.getElementById("listsEditPageDeleteItemsButton").innerHTML = "Confirm Delete"
-  } else if (document.getElementById("listsEditPageDeleteItemsButton").innerHTML == "Confirm Delete") {
-    await setDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("list_id")), {});
-    document.getElementById("listsEditPageDeleteItemsButton").innerHTML = "Delete All Items"
-    document.querySelectorAll("#listsEditPage .notesSection").forEach(div => div.remove());
-    document.querySelector("#listsPageTotalItems").innerHTML = `<b>Total Items:</b> 0 items`
-  }
-})
-
-
-
-async function goPage(goToPage) {
-  const button = document.querySelector(`.navbarButton[page='${goToPage}']`)
-  if (button != null) {
-    if (changingPages || button.classList.contains("active")) return;
-    changingPages = true;
-    document.querySelectorAll('.page').forEach(page => page.style.opacity = '0');
-    await wait(300)
-    document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-    document.querySelectorAll('.navbarButton').forEach(btn => { if (btn.id !== "navbarButtonOpen") btn.classList.remove('active') });
-    await load_page(goToPage)
-    await wait(100)
-    document.getElementById(goToPage).style.display = 'flex';
-    document.getElementById(goToPage).style.opacity = '1';
-    button.classList.add('active');
-    await wait(300)
-    changingPages = false;
-  } else {
-    changingPages = true;
-    document.querySelectorAll('.page').forEach(page => page.style.opacity = '0');
-    await wait(300)
-    document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-    document.querySelectorAll('.navbarButton').forEach(btn => { if (btn.id !== "navbarButtonOpen") btn.classList.remove('active') });
-    await load_page(goToPage)
-    await wait(100)
-    document.getElementById(goToPage).style.display = 'flex';
-    document.getElementById(goToPage).style.opacity = '1';
-    await wait(300)
-    changingPages = false;
-  }
+  lists.forEach(async (list) => {
     
+    const listDiv = document.createElement("div");
+    listDiv.classList.add("section");
+    listDiv.setAttribute("columnType", "3COL");
+    listDiv.setAttribute("listID", list.id);
+    
+    listDiv.innerHTML = `
+      <p class="sectionSubTitle" style="margin-bottom: 0 !important;">${list.id}</p>
+    `;
+    
+    document.querySelector("#listsDefault").appendChild(listDiv);
+    listDiv.addEventListener("click", async function() {
+      await LoadPage_ListsPage_LoadList(list.id)
+    })
+    
+  })
 }
+
+
+// -- > Load List Page
+
+async function LoadPage_ListsPage_LoadList(listID) {
+  await openLoading();
+
+  document.querySelector("#listsDefault").style.display = "none";
+  document.querySelector("#listsDefault").style.opacity = "0";
+
+  // -- > Load list items
+  const list = await getDoc(doc(db, "lists", listID));
+  const listItems = list.data();
+
+  // -- > Load list items into page
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle").innerHTML = `<b>Total Items:</b> <span style='color: var(--colDimmed)'>${Object.keys(listItems).length} items</span>`
+
+  // -- > Clear all items 
+  document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv").forEach( (item) => { item.remove(); } )
+
+  for (const key in listItems) {
+    
+    const itemDiv = document.createElement("div");
+    itemDiv.classList.add("section");
+    itemDiv.classList.add("listsPage-ItemDiv")
+    itemDiv.setAttribute("columnType", "3COL");
+    itemDiv.setAttribute("itemID", key);
+    itemDiv.setAttribute("itemState", listItems[key][1])
+
+    let checked = listItems[key][1] ? "check_box" : "check_box_outline_blank"
+    let colour = listItems[key][1] ? "var(--colSuccess)" : "var(--colNorm)"
+
+    
+
+      itemDiv.innerHTML = `
+      <div class="listsPage-SmallIconButton" function="check" style="color: ${colour}"><i class="material-symbols-rounded">${checked}</i></div>
+      <p class="sectionPara">${listItems[key][0]}</p>
+      <p class="sectionSubInfo">Added by: ${listItems[key][2]}</p>
+    `;
+
+    document.querySelector("#listsEditPage").appendChild(itemDiv);
+    
+    itemDiv.addEventListener("click", async function() {
+      if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "check_box") {
+        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box_outline_blank"
+        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colNorm)"
+        itemDiv.setAttribute("itemState", false)
+        
+        document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
+
+        
+      } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "check_box_outline_blank") {
+        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box"
+        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colSuccess)"
+        itemDiv.setAttribute("itemState", true)
+        
+        document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
+
+        
+      } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "delete") {
+        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "delete_forever"
+        itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colError)"
+
+        
+      } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "delete_forever") {
+        itemDiv.remove()
+        
+        document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
+        
+        var temp_itemAmount = Number(document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle").innerHTML
+          .replace(`<b>Total Items:</b> <span style="color: var(--colDimmed)">`, "")
+          .replace(` items</span>`, "")) - 1
+        document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle")
+          .innerHTML = `<b>Total Items:</b> <span style='color: var(--colDimmed)'>${temp_itemAmount} items</span>`
+        
+      }
+    })
+    
+  }
+
+  document.querySelector("#listsEditPage").style.removeProperty("display")
+  document.querySelector("#listsEditPage").style.removeProperty("opacity")
+  document.querySelector("#listsEditPage").setAttribute("listID", listID)
+
+  await closeLoading();
+}
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+// -- PAGE BUTTON FUNCTIONS /////////////////////////////////////////////////// -- //
+// -- //////////////////////////////////////////////////////////////////////// -- //
+
+
+
+// -- > Lists Page > Items Page >  Switch Delete
+
+document.querySelector("#listsEdit-deleteItemsButton").addEventListener("click", async function() {
+
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-saveListButton").style.display = "none"
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-createItemButton").style.display = "none"
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteItemsButton").style.display = "none"
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteListButton").style.display = "none"
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-confirmDeleteItemsButton").style.removeProperty("display")
+
+  for (const item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
+    item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "delete"
+    item.querySelectorAll(".listsPage-SmallIconButton")[0].style.removeProperty("color")
+  }
+  
+})
+
+document.querySelector("#listsEdit-confirmDeleteItemsButton").addEventListener("click", async function() {
+
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-saveListButton").style.removeProperty("display")
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-createItemButton").style.removeProperty("display")
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteItemsButton").style.removeProperty("display")
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-deleteListButton").style.removeProperty("display")
+  document.querySelector("#listsEditPage").querySelector("#listsEdit-confirmDeleteItemsButton").style.display = "none"
+
+  for (var item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
+    if (item.getAttribute("itemState") == "true") {
+      item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box"
+      item.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colSuccess)"
+    } else {
+      item.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML = "check_box_outline_blank"
+      item.querySelectorAll(".listsPage-SmallIconButton")[0].style.color = "var(--colNorm)"
+    }
+  }
+
+})
+
+// -- > Lists Page > Items Page >  Save List
+
+document.querySelector("#listsEdit-saveListButton").addEventListener("click", async function() {
+
+  if (document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML == "save") {
+
+    var temp_itemsList = {}
+  
+    for (var item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
+      var temp_ItemTitle = item.querySelectorAll(".sectionPara")[0]
+      var temp_AddedBy = item.querySelectorAll(".sectionSubInfo")[0].innerHTML.replace("Added by: ", "")
+      temp_itemsList[item.getAttribute("itemID")] = [temp_ItemTitle, item.getAttribute("itemState") == "true", temp_AddedBy]
+    }
+  
+    await setDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")), temp_itemsList)
+
+  }
+
+  await openLoading();
+
+  document.querySelector("#listsDefault").style.removeProperty("display")
+  document.querySelector("#listsDefault").style.removeProperty("opacity")
+  document.querySelector("#listsEditPage").style.display = "none";
+  document.querySelector("#listsEditPage").style.opacity = "0";
+  document.querySelector("#listsEditPage").removeAttribute("listID")
+  document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML == "undo"
+  
+  await closeLoading();
+  
+})
+
+// -- > Lists Page > Items Page >  Create Item
+
+document.querySelector("#listsEdit-createItemButton").addEventListener("click", async function() {
+
+  await openLoading();
+
+  document.querySelector("#listsEditPage").style.display = "none";
+  document.querySelector("#listsEditPage").style.opacity = "0";
+  document.querySelector("#listsNewItemPage").style.removeProperty("display")
+  document.querySelector("#listsNewItemPage").style.removeProperty("opacity")
+
+  await closeLoading();
+  
+})
+
+// -- > Lists Page > Items Page >  Delete List
+
+document.querySelector("#listsEdit-deleteListButton").addEventListener("click", async function() {
+
+  if ( document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML == "contract_delete" ) {
+    document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML = "delete_forever"
+  } else if ( document.querySelector("#listsEdit-deleteListButton").querySelector("i").innerHTML == "delete_forever" ) {
+    await deleteDoc( doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")) )
+    await Refresh()
+  }
+  
+})
+
+// -- > Lists Page > Default >  New List
+
+document.querySelector("#listsDefault-createListButton").addEventListener("click", async function() {
+
+  await openLoading();
+
+  document.querySelector("#listsDefault").style.display = "none";
+  document.querySelector("#listsDefault").style.opacity = "0";
+  document.querySelector("#listsNewListPage").style.removeProperty("display")
+  document.querySelector("#listsNewListPage").style.removeProperty("opacity")
+
+  await closeLoading();
+  
+})
+
+// -- > Lists Page > New List >  Cancel List
+
+document.querySelector("#listsNewListPage-cancelNewList").addEventListener("click", async function() {
+
+  await openLoading();
+
+  document.querySelector("#listsDefault").style.removeProperty("display")
+  document.querySelector("#listsDefault").style.removeProperty("opacity")
+  document.querySelector("#listsNewListPage").style.display = "none";
+  document.querySelector("#listsNewListPage").style.opacity = "0";
+
+  document.querySelector("#listsNewListPage-TitleBox").value = ""
+
+  await closeLoading();
+  
+})
+
+// -- > Lists Page > New List >  Add List
+
+document.querySelector("#listsNewListPage-addNewList").addEventListener("click", async function() {
+
+  await setDoc(doc(db, "lists", document.querySelector("#listsNewListPage-TitleBox").value), {})
+
+  await Refresh();
+  
+})
+
+// -- > Lists Page > New Item >  Cancel Item
+
+document.querySelector("#listsNewItemPage-cancelNewItem").addEventListener("click", async function() {
+
+  await openLoading();
+
+  document.querySelector("#listsEditPage").style.removeProperty("display")
+  document.querySelector("#listsEditPage").style.removeProperty("opacity")
+  document.querySelector("#listsNewItemPage").style.display = "none";
+  document.querySelector("#listsNewItemPage").style.opacity = "0";
+
+  document.querySelector("#listsNewItemPage-item").value = ""
+  document.querySelector("#listsNewItemPage-addedBy").value = ""
+
+  await closeLoading();
+  
+})
+
+// -- > Lists Page > New Item >  Add Item
+
+document.querySelector("#listsNewItemPage-addNewItem").addEventListener("click", async function() {
+
+  await updateDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")),
+                   { [document.querySelector("#listsNewItemPage-item").value]: [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value] }
+                   )
+
+  await Refresh();
+  
+})
+
+// -- > Lists Page > New Item >  Add More Items
+
+document.querySelector("#listsNewItemPage-addMoreItems").addEventListener("click", async function() {
+
+  await updateDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")),
+                   { [document.querySelector("#listsNewItemPage-item").value]: [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value] }
+                   )
+
+  document.querySelector("#listsNewItemPage-item").value = ""
+  document.querySelector("#listsNewItemPage-addedBy").value = ""
+  
+  
+})
