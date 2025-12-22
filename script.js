@@ -117,6 +117,15 @@ async function closeLoading() {
   return;
 }
 
+async function getRandomFieldName(length = 15) {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 
 
 // -- ////////////////////////////////////////////////////////////////////////// -- //
@@ -389,13 +398,13 @@ async function LoadPage_ListsPage_NewItem(key, listItem) {
     } else if (itemDiv.querySelectorAll(".listsPage-SmallIconButton")[0].querySelector("i").innerHTML == "delete_forever") {
       itemDiv.remove()
 
-      document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "save"
-
       var temp_itemAmount = Number(document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle").innerHTML
         .replace(`<b>Total Items:</b> <span style="color: var(--colDimmed)">`, "")
         .replace(` items</span>`, "")) - 1
       document.querySelector("#listsEditPage").querySelector("#listsEdit-totalItemsTitle")
         .innerHTML = `<b>Total Items:</b> <span style='color: var(--colDimmed)'>${temp_itemAmount} items</span>`
+
+      await updateDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")), { [key]: deleteField() })
 
     }
   })
@@ -457,12 +466,12 @@ if (window.location.href.endsWith("/listsPage")) {
       var temp_itemsList = {}
     
       for (var item of document.querySelector("#listsEditPage").querySelectorAll(".listsPage-ItemDiv")) {
-        var temp_ItemTitle = item.querySelectorAll(".sectionPara")[0]
+        var temp_ItemTitle = item.querySelectorAll(".sectionPara")[0].innerHTML
         var temp_AddedBy = item.querySelectorAll(".sectionSubInfo")[0].innerHTML.replace("Added by: ", "")
         temp_itemsList[item.getAttribute("itemID")] = [temp_ItemTitle, item.getAttribute("itemState") == "true", temp_AddedBy]
       }
     
-      await setDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")), temp_itemsList)
+      await setDoc( doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")), temp_itemsList)
   
     }
   
@@ -473,7 +482,7 @@ if (window.location.href.endsWith("/listsPage")) {
     document.querySelector("#listsEditPage").style.display = "none";
     document.querySelector("#listsEditPage").style.opacity = "0";
     document.querySelector("#listsEditPage").removeAttribute("listID")
-    document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML == "undo"
+    document.querySelector("#listsEdit-saveListButton").querySelector("i").innerHTML = "undo"
     
     await closeLoading();
     
@@ -574,12 +583,30 @@ if (window.location.href.endsWith("/listsPage")) {
   // -- > Lists Page > New Item >  Add Item
   
   document.querySelector("#listsNewItemPage-addNewItem").addEventListener("click", async function() {
+
+    var temp_itemID = await getRandomFieldName()
+    var temp_generateNewID = true
+
+    //check if it already exists in firebase
+    const lists = await getDocs(collection(db, "lists"));
+
+    while (temp_generateNewID == true) {
+      temp_generateNewID = false
+      lists.forEach(async (list) => {
+        if (list.id == temp_itemID) {
+          temp_generateNewID = true
+        }
+      })
+      if (temp_generateNewID == true) {
+        temp_itemID = await getRandomFieldName()
+      }
+    }
   
     await updateDoc(doc(db, "lists", document.querySelector("#listsEditPage").getAttribute("listID")),
-                     { [document.querySelector("#listsNewItemPage-item").value]: [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value] }
+                     { [temp_itemID]: [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value] }
                      )
   
-    await LoadPage_ListsPage_NewItem(document.querySelector("#listsNewItemPage-item").nodeValue,
+    await LoadPage_ListsPage_NewItem(temp_itemID,
                                      [document.querySelector("#listsNewItemPage-item").value, false, document.querySelector("#listsNewItemPage-addedBy").value])
   
     await openLoading();
