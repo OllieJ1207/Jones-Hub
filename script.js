@@ -476,6 +476,9 @@ async function LoadPage_Meals() {
   // let weekNumber = (weeksDiff % 3) + 1;
 
   // let mealsDataCharlotteTemp = await getDoc(doc(db, "meals", "charlotteWeek1"))
+
+  let mealsDataCharlotteTemp = await getDoc(doc(db, "meals", "thisWeek"))
+  mealsDataCharlotte = mealsDataCharlotteTemp.data()
   
   let mealsDataThisWeekTemp = await getDoc(doc(db, "meals", "thisWeek"))
   mealsDataThisWeek = mealsDataThisWeekTemp.data()
@@ -483,7 +486,7 @@ async function LoadPage_Meals() {
   let mealsDataNextWeekTemp = await getDoc(doc(db, "meals", "nextWeek"))
   mealsDataNextWeek = mealsDataNextWeekTemp.data()
 
-  await UpdateMeals(mealsDataThisWeek, mealsDataNextWeek)
+  await UpdateMeals(mealsDataCharlotte, mealsDataThisWeek, mealsDataNextWeek)
 }
 
 
@@ -782,7 +785,7 @@ if (window.location.href.endsWith("/mealPlanner")) {
     await setDoc(doc(db, "meals", "thisWeek"), mealsDataThisWeek)
     await setDoc(doc(db, "meals", "nextWeek"), mealsDataNextWeek)
 
-    await UpdateMeals(mealsDataThisWeek, mealsDataNextWeek)
+    await UpdateMeals(mealsDataCharlotte, mealsDataThisWeek, mealsDataNextWeek)
     
     document.querySelector("#mealsDefault").style.removeProperty("display")
     document.querySelector("#mealsNext").style.display = "none"
