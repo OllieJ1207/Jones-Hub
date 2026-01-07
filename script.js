@@ -7,6 +7,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getFirestore, doc, collection, setDoc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, Timestamp, increment, deleteField } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
+new Date()
+
 
 
 // -- ////////////////////////////////////////////////////////////////////////// -- //
@@ -68,6 +70,10 @@ const events = [
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 var changingPages = false;
 var pagesLoadingTime = 800;
+
+var mealsDataCharlotte = {}
+var mealsDataThisWeek = {}
+var mealsDataNextWeek = {}
 
 
 
@@ -170,6 +176,8 @@ document.addEventListener("DOMContentLoaded", async function (event) {
     if (localStorage.getItem("deviceUser") != null) {
       document.querySelector("#settingsDefault-DeviceUserBox").value = localStorage.getItem("deviceUser")
     }
+  } else if (window.location.href.endsWith("/mealPlanner")) {
+    await LoadPage_Meals()
   }
   
 
@@ -258,6 +266,53 @@ const AllFunctions = { Refresh }
 async function Refresh() {
   await openLoading();
   window.location.reload();
+}
+
+async function UpdateMeals(mealsCharlotte, mealsThisWeek, mealsNextWeek) {
+  // if (mealsCharlotte["Monday"] == "") { document.querySelector("#mealsCharlotte-Monday").value = "Packed Lunch" } 
+  // else { document.querySelector("#mealsCharlotte-Monday").value = mealsCharlotte["Monday"] }
+
+  // if (mealsCharlotte["Tuesday"] == "") { document.querySelector("#mealsCharlotte-Tuesday").value = "Packed Lunch" }
+  // else { document.querySelector("#mealsCharlotte-Tuesday").value = mealsCharlotte["Tuesday"] }
+
+  // if (mealsCharlotte["Wednesday"] == "") { document.querySelector("#mealsCharlotte-Wednesday").value = "Packed Lunch" }
+  // else { document.querySelector("#mealsCharlotte-Wednesday").value = mealsCharlotte["Wednesday"] }
+
+  // if (mealsCharlotte["Thursday"] == "") { document.querySelector("#mealsCharlotte-Thursday").value = "Packed Lunch" }
+  // else { document.querySelector("#mealsCharlotte-Thursday").value = mealsCharlotte["Thursday"] }
+
+  // if (mealsCharlotte["Friday"] == "") { document.querySelector("#mealsCharlotte-Friday").value = "Packed Lunch" }
+  // else { document.querySelector("#mealsCharlotte-Friday").value = mealsCharlotte["Friday"] }
+  
+  document.querySelector("#mealsDefault-Monday-kids").value = mealsThisWeek["Monday"][0]
+  document.querySelector("#mealsDefault-Monday-parents").value = mealsThisWeek["Monday"][1]
+  document.querySelector("#mealsDefault-Tuesday-kids").value = mealsThisWeek["Tuesday"][0]
+  document.querySelector("#mealsDefault-Tuesday-parents").value = mealsThisWeek["Tuesday"][1]
+  document.querySelector("#mealsDefault-Wednesday-kids").value = mealsThisWeek["Wednesday"][0]
+  document.querySelector("#mealsDefault-Wednesday-parents").value = mealsThisWeek["Wednesday"][1]
+  document.querySelector("#mealsDefault-Thursday-kids").value = mealsThisWeek["Thursday"][0]
+  document.querySelector("#mealsDefault-Thursday-parents").value = mealsThisWeek["Thursday"][1]
+  document.querySelector("#mealsDefault-Friday-kids").value = mealsThisWeek["Friday"][0]
+  document.querySelector("#mealsDefault-Friday-parents").value = mealsThisWeek["Friday"][1]
+  document.querySelector("#mealsDefault-Saturday-kids").value = mealsThisWeek["Saturday"][0]
+  document.querySelector("#mealsDefault-Saturday-parents").value = mealsThisWeek["Saturday"][1]
+  document.querySelector("#mealsDefault-Sunday-kids").value = mealsThisWeek["Sunday"][0]
+  document.querySelector("#mealsDefault-Sunday-parents").value = mealsThisWeek["Sunday"][1]
+
+  document.querySelector("#mealsNext-Monday-kids").value = mealsNextWeek["Monday"][0]
+  document.querySelector("#mealsNext-Monday-parents").value = mealsNextWeek["Monday"][1]
+  document.querySelector("#mealsNext-Tuesday-kids").value = mealsNextWeek["Tuesday"][0]
+  document.querySelector("#mealsNext-Tuesday-parents").value = mealsNextWeek["Tuesday"][1]
+  document.querySelector("#mealsNext-Wednesday-kids").value = mealsNextWeek["Wednesday"][0]
+  document.querySelector("#mealsNext-Wednesday-parents").value = mealsNextWeek["Wednesday"][1]
+  document.querySelector("#mealsNext-Thursday-kids").value = mealsNextWeek["Thursday"][0]
+  document.querySelector("#mealsNext-Thursday-parents").value = mealsNextWeek["Thursday"][1]
+  document.querySelector("#mealsNext-Friday-kids").value = mealsNextWeek["Friday"][0]
+  document.querySelector("#mealsNext-Friday-parents").value = mealsNextWeek["Friday"][1]
+  document.querySelector("#mealsNext-Saturday-kids").value = mealsNextWeek["Saturday"][0]
+  document.querySelector("#mealsNext-Saturday-parents").value = mealsNextWeek["Saturday"][1]
+  document.querySelector("#mealsNext-Sunday-kids").value = mealsNextWeek["Sunday"][0]
+  document.querySelector("#mealsNext-Sunday-parents").value = mealsNextWeek["Sunday"][1]
 }
 
 
@@ -408,6 +463,27 @@ async function LoadPage_ListsPage_NewItem(key, listItem) {
 
     }
   })
+}
+
+async function LoadPage_Meals() {
+  // if today's date is every 3 weeks from 12/04/2024, then get week 1 meals from database
+  
+  // let startDate = new Date(2024, 3, 12); // April is month 3 (zero-based)
+  // let today = new Date();
+  // let diff = today.getTime() - startDate.getTime();
+  // let weeksDiff = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
+
+  // let weekNumber = (weeksDiff % 3) + 1;
+
+  // let mealsDataCharlotteTemp = await getDoc(doc(db, "meals", "charlotteWeek1"))
+  
+  let mealsDataThisWeekTemp = await getDoc(doc(db, "meals", "thisWeek"))
+  mealsDataThisWeek = mealsDataThisWeekTemp.data()
+
+  let mealsDataNextWeekTemp = await getDoc(doc(db, "meals", "nextWeek"))
+  mealsDataNextWeek = mealsDataNextWeekTemp.data()
+
+  await UpdateMeals(mealsDataThisWeek, mealsDataNextWeek)
 }
 
 
@@ -655,5 +731,77 @@ if (window.location.href.endsWith("/settingsPage")) {
     localStorage.setItem("deviceUser", document.querySelector("#settingsDefault-DeviceUserBox").value)
     
   })
+  
+}
+
+
+
+// -- ////////////////////////////////////////////////////////////////////////// -- //
+
+
+
+if (window.location.href.endsWith("/mealPlanner")) {
+
+  // document.querySelector("#mealsDefault-charlotte").addEventListener("click", async function() {
+  //   await openLoading()
+  //   document.querySelector("#mealsDefault").style.display = "none"
+  //   document.querySelector("#mealsCharlotte").style.removeProperty("display")
+  //   await wait(100)
+  //   await closeLoading()
+  // })
+
+  document.querySelector("#mealsDefault-saveWeek").addEventListener("click", async function() {
+    await setDoc(doc(db, "meals", "thisWeek"), mealsDataThisWeek)
+    document.querySelector("#mealsDefault-saveWeek").style.borderColor = "var(--colSuccess)"
+    await wait(750)
+    document.querySelector("#mealsDefault-saveWeek").style.removeProperty("border-color")
+  })
+
+  document.querySelector("#mealsDefault-editNextWeek").addEventListener("click", async function() {
+    await openLoading()
+    document.querySelector("#mealsDefault").style.display = "none"
+    document.querySelector("#mealsNext").style.removeProperty("display")
+    await wait(100)
+    await closeLoading()
+  })
+
+  document.querySelector("#mealsNext-saveWeek").addEventListener("click", async function() {
+    await openLoading()
+    await setDoc(doc(db, "meals", "nextWeek"), mealsDataNextWeek)
+    document.querySelector("#mealsDefault").style.removeProperty("display")
+    document.querySelector("#mealsNext").style.display = "none"
+    await wait(100)
+    await closeLoading()
+  })
+
+  document.querySelector("#mealsNext-startNextWeek").addEventListener("click", async function() {
+    await openLoading()
+    mealsDataThisWeek = mealsDataNextWeek
+    mealsDataNextWeek = { "Monday": ["", ""], "Tuesday": ["", ""], "Wednesday": ["", ""], "Thursday": ["", ""], "Friday": ["", ""], "Saturday": ["", ""], "Sunday": ["", ""] }
+
+    await setDoc(doc(db, "meals", "thisWeek"), mealsDataThisWeek)
+    await setDoc(doc(db, "meals", "nextWeek"), mealsDataNextWeek)
+
+    await UpdateMeals(mealsDataThisWeek, mealsDataNextWeek)
+    
+    document.querySelector("#mealsDefault").style.removeProperty("display")
+    document.querySelector("#mealsNext").style.display = "none"
+    await wait(250)
+    await closeLoading()
+  })
+
+  document.querySelector("#mealsDefault").querySelectorAll(".mealSectionText").forEach( async mealSectionText => {
+    mealSectionText.addEventListener("change", async function() {
+      mealsDataThisWeek[mealSectionText.id.replace("mealsDefault-", "").replace("-kids", "").replace("-parents", "")][mealSectionText.id.includes("-kids") ? 0 : 1] = mealSectionText.value
+    })
+  })
+
+  document.querySelector("#mealsNext").querySelectorAll(".mealSectionText").forEach( async mealSectionText => {
+    mealSectionText.addEventListener("change", async function() {
+      mealsDataNextWeek[mealSectionText.id.replace("mealsNext-", "").replace("-kids", "").replace("-parents", "")][mealSectionText.id.includes("-kids") ? 0 : 1] = mealSectionText.value
+    })
+  })
+
+  
   
 }
