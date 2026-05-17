@@ -104,43 +104,37 @@ body {
 .navbar {
   display: flex;
   position: fixed;
-  height: calc(100vh - 80px);
-  width: 86px;
+  bottom: 0;
+  width: 100vw;
+  height: 70px;
   padding: 10px;
   background-color: var(--colDark);
-  transition: width 0.3s ease-in-out;
-  z-index: 997;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.navbarlow {
-  height: 80px !important;
-  bottom: 0%;
-  left: 0%;
-  width: inherit;
-  transition: none;
+  z-index: 50;
+  overflow-x: auto;
+  overflow-y: clip;
+  align-items: center;
 }
 
 ::-webkit-scrollbar {
-  width: 0px;
+  display: none;
 }
 
 .navbar .navbarTitle {
-  min-height: 44px;
+  min-width: 90px !important;
   font-size: 30px;
   color: var(--colTheme);
-  text-align: center;
-  padding-bottom: 5px;
-  margin-bottom: 7px;
-  border-bottom: 3px solid var(--colTheme);
+  padding: 10px;
+  margin-right: 7px;
+  border-right: 3px solid var(--colTheme);
   user-select: none;
-  overflow-y: visible;
+  background: var(--colDark);
+  position: sticky;
+  left: 0;
 }
 
 .navbar .navbarButton {
   height: 50px;
-  min-height: 50px;
+  min-width: 50px;
   background: var(--colSemiDark);
   color: var(--colNorm);
   padding: 5px;
@@ -166,7 +160,6 @@ body {
   color: var(--colTheme);
   overflow: hidden;
   font-size: 40px !important;
-  margin-right: 5px;
   min-width: 40px;
   user-select: none;
 }

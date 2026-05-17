@@ -53,6 +53,7 @@ const events = [
   { name: "Rick", date: "1982-08-16", emoji: "🎂" },
   { name: "Anna", date: "1982-08-22", emoji: "🎂" },
   { name: "Ollie", date: "2007-12-03", emoji: "🎂" },
+  { name: "Center Parcs", date: "2010-06-22", emoji: "🌲" },
   { name: "Harry", date: "2010-06-25", emoji: "🎂" },
   { name: "Charlotte", date: "2017-04-12", emoji: "🎂" },
   { name: "Halloween", date: "2000-10-31", emoji: "🎃" },
@@ -158,7 +159,6 @@ document.documentElement.requestFullscreen().then(() => {
 
 document.addEventListener("DOMContentLoaded", async function (event) {
 
-
   // -- > Hide disabled navbar buttons.
   document.querySelectorAll('.navbarButton').forEach(button => {
     if (button.classList.contains("navbarButtonDisabled")) {
@@ -194,35 +194,6 @@ document.addEventListener("DOMContentLoaded", async function (event) {
 // -- //////////////////////////////////////////////////////////////////////// -- //
 
 
-
-document.getElementById("navbarButtonOpen").addEventListener("click", async function() {
-  if (document.getElementById("navbarButtonOpen").getAttribute("state") == "closed") {
-
-    document.getElementById("navbarButtonOpen").setAttribute("state", "changing")
-    document.getElementById("navbarButtonOpen").classList.add("active")
-    document.getElementById("navbarButtonOpenIcon").style.transform = "rotate(180deg)"
-    document.querySelectorAll(".navbar")[0].style.width = "225px"
-
-    await wait(310)
-
-    document.querySelectorAll(".navbarTitle")[0].innerHTML = "JONES HUB"
-    document.getElementById("navbarButtonOpen").setAttribute("state", "open")
-
-
-  } else {
-
-    document.getElementById("navbarButtonOpen").setAttribute("state", "changing")
-    document.getElementById("navbarButtonOpen").classList.remove("active")
-    document.getElementById("navbarButtonOpenIcon").style.transform = "rotate(0deg)"
-
-    document.querySelectorAll(".navbarTitle")[0].innerHTML = "HUB"
-    document.querySelectorAll(".navbar")[0].style.width = "86px"
-
-    await wait(310)
-
-    document.getElementById("navbarButtonOpen").setAttribute("state", "closed")
-  }
-});
 
 document.querySelectorAll('.navbarButton').forEach(button => {
   button.addEventListener('click', async function() {
