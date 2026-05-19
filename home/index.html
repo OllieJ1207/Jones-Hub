@@ -14,8 +14,9 @@
   <meta name="viewport" content="width=device-width">
   <title>Jones Hub - Home</title>
 
-  <link href="global.css" rel="stylesheet" type="text/css" />
-  <script type="module" , src="script.js"></script>
+  <link href="../global.css" rel="stylesheet" type="text/css" />
+  <script type="module" , src="../global.js"></script>
+  <script type="module" , src="home.js"></script>
 
   <!-- To make Google Icons (below) filled, change 2nd to last 0 to 1 -->
   <link rel="stylesheet"
@@ -36,41 +37,7 @@
     <div class="V1GLOBAL_Loader"></div>
   </div>
 
-
-
-  <!-- ////////////////////////////////////////////////////////////////////////// -->
-  <!-- NavBar /////////////////////////////////////////////////////////////////// -->
-  <!-- ////////////////////////////////////////////////////////////////////////// -->
-
-
-
-  <div class="navbar">
-    <p class="navbarTitle">HUB</p>
-
-    <div class="navbarButton active" page=".">
-      <i class="material-symbols-rounded icon">dashboard</i>
-    </div>
-    <div class="navbarButton navbarButtonDisabled" page="calenderPage">
-      <i class="material-symbols-rounded icon">calendar_month</i>
-    </div>
-    <div class="navbarButton" page="./listsPage.html">
-      <i class="material-symbols-rounded icon">list_alt</i>
-    </div>
-    <div class="navbarButton navbarButtonDisabled" page="./mealPlanner.html">
-      <i class="material-symbols-rounded icon">calendar_meal</i>
-    </div>
-    <div class="navbarButton navbarButtonDisabled" page="./notesPage.html">
-      <i class="material-symbols-rounded icon">notes</i>
-    </div>
-    <div class="navbarButton" page="./settingsPage.html">
-      <i class="material-symbols-rounded icon">settings</i>
-    </div>
-    <div class="navbarButton" page="function:Refresh">
-      <i class="material-symbols-rounded icon">refresh</i>
-    </div>
-
-    <div style="background: linear-gradient(270deg, var(--colDark), transparent); width: 25px; height: inherit; position: fixed; right: 0; bottom: 0;"></div>
-  </div>
+  <div class="navbar"></div>
 
 
 
@@ -82,19 +49,13 @@
 
   <div class="page" id="homeDefault" style="justify-content: center;">
     
-    <p class="title">Welcome to the Jones Family Hub!</p>
+    <p class="title">Welcome!</p>
     
-    <div class="section" heightType="HALF" columnType="2COL">
+    <div class="section" columnType="2COL">
       <p class="sectionTitle">Upcoming Events</p>
       <p class="sectionSubTitle" id="homeDefault-nextEventTitle" style="display: inline-block;">⌛ Next Event: </p>
       <p class="sectionPara" id="homeDefault-nextEventText" style="display: inline-block">None</p>
     </div>
-
-    <div class="section" heightType="HALF" columnType="2COL"></div>
-    
-    <div class="section" heightType="HALF" columnType="2COL"></div>
-    
-    <div class="section" heightType="HALF" columnType="2COL"></div>
     
   </div>
 

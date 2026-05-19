@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+
+
+<!-- ////////////////////////////////////////////////////////////////////////// -->
+<!-- HEAD ///////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Jones Hub - Home</title>
+
+  <link href="../global.css" rel="stylesheet" type="text/css" />
+  <link href="admin.css" rel="stylesheet" type="text/css" />
+  <script type="module" , src="../global.js"></script>
+  <script type="module" , src="admin.js"></script>
+
+  <!-- To make Google Icons (below) filled, change 2nd to last 0 to 1 -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+
+
+<!-- ////////////////////////////////////////////////////////////////////////// -->
+<!-- BODY ///////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+
+<body>
+
+  <div class="V1GLOBAL_LoadingDiv">
+    <div class="V1GLOBAL_Loader"></div>
+  </div>
+
+  <div class="navbar"></div>
+
+  <div class="overlay" id="pinOverlay" style="background: var(--col5); display: none;">
+    <p style="color: var(--col1); font-size: 30px;">Enter Admin Pin:</p>
+    <input id="adminPinEnter" type="number" placeholder="0000" max="4"></input>
+    <button id="adminPinEnterButton" type="button">Submit</button>
+  </div>
+
+
+
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+  <!-- Dashboard //////////////////////////////////////////////////////////////// -->
+  <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+
+  
+  <div class="overlay" id="editEventsOverlay" style="display: none;">
+    <div class="section" style="flex: none !important;">
+      <p class="sectionTitle">Edit Upcoming Event</p>
+      <div></div>
+      <button class="sectionButton" id="editEventsCloseButton" type="button">Close</button>
+    </div>
+  </div>
+
+
+  <div class="page" style="justify-content: center;">
+    
+    <p class="title">Admin Page</p>
+    
+    <div class="section" columnType="2COL">
+      <p class="sectionTitle">Add Upcoming Event</p>
+      <input class="sectionTextBox" id="addEvent-name" style="margin-bottom: 0px" type="text" placeholder="Name" autocomplete="off"></input>
+      <input class="sectionTextBox" id="addEvent-date" style="margin-bottom: 0px" type="text" placeholder="Date (yyyy-mm-dd)" autocomplete="off"></input>
+      <input class="sectionTextBox" id="addEvent-emoji" type="text" placeholder="Emoji" autocomplete="off"></input>
+      <button class="sectionButton" id="addEvent-submit" type="button">Add Event</button>
+      <div style="height: 15px"></div>
+      <button class="sectionButton" id="editEventsButton" type="button">Edit Events</button>
+    </div>
+    
+  </div>
+
+</body>
+
+</html>

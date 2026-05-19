@@ -1,0 +1,35 @@
+#adminPinEnter {
+  width: 75%;
+  border: 2px solid var(--colTheme);
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 20px;
+  background: var(--col6);
+  color: var(--col1);
+}
+
+#adminPinEnterButton {
+  width: 50%;
+  border: 2px solid var(--colTheme);
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 20px;
+  background: var(--col6);
+  color: var(--col1);
+  transition: border 0.25s ease-in-out;
+}
+
+.eventLabel {
+  display: block;
+  width: calc(100% - 20px);
+  color: var(--col1);
+  background: var(--col3);
+  border-radius: 15px;
+  margin: 10px;
+  padding: 5px 5px 5px 10px;
+  font-size: 20px;
+}
+.eventLabel i {
+  float: right;
+  color: var(--colTheme);
+}

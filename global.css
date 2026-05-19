@@ -17,7 +17,7 @@
 }
 
 body {
-  background: var(--colMed);
+  background: var(--col4);
   height: 100vh;
   font-family: 'Russo One', sans-serif;
   overflow: hidden;
@@ -25,23 +25,16 @@ body {
 }
 
 :root {
-  --colDark: #222;
-  --colSemiDark: #333;
-  --colMed: #444;
-  --colLight: #555;
-  --colDimmed: #bbb;
-  --colTheme: var(--colTHEME_DEFAULT);
-  --colNorm: #fff;
+  --col1: #fff;
+  --col2: #bbb;
+  --col3: #555;
+  --col4: #444;
+  --col5: #333;
+  --col6: #222;
+  --colTheme: #09f;
 
   --colSuccess: #4CAF50;
   --colError: #D32F2F;
-
-  --colTHEME_DEFAULT: #09f;
-  --colTHEME_SPOOKY1: #EB6122;
-  --colTHEME_SPOOKY2: #431C52;
-  --colTHEME_XMAS1: #009944;
-  --colTHEME_XMAS2: #bb0000;
-  --colTHEME_XMAS3: #ffffff;
 }
 
 ::-webkit-scrollbar {
@@ -108,7 +101,7 @@ body {
   width: 100vw;
   height: 70px;
   padding: 10px;
-  background-color: var(--colDark);
+  background-color: var(--col6);
   z-index: 50;
   overflow-x: auto;
   overflow-y: clip;
@@ -127,7 +120,7 @@ body {
   margin-right: 7px;
   border-right: 3px solid var(--colTheme);
   user-select: none;
-  background: var(--colDark);
+  background: var(--col6);
   position: sticky;
   left: 0;
 }
@@ -135,8 +128,8 @@ body {
 .navbar .navbarButton {
   height: 50px;
   min-width: 50px;
-  background: var(--colSemiDark);
-  color: var(--colNorm);
+  background: var(--col5);
+  color: var(--col1);
   padding: 5px;
   border-radius: 10px;
   margin: 5px !important;
@@ -144,7 +137,7 @@ body {
   display: flex;
   align-items: center;
   overflow: hidden;
-  border: 3px solid var(--colLight);
+  border: 3px solid var(--col3);
   user-select: none;
   cursor: pointer;
 }
@@ -152,7 +145,7 @@ body {
 .navbar .active {
   margin-top: 15px;
   margin-bottom: 15px;
-  background: var(--colLight);
+  background: var(--col3);
   color: var(--colTheme)
 }
 
@@ -180,16 +173,11 @@ body {
 
 .page {
   position: absolute;
-  transition: opacity 0.3s ease-in-out;
-
   min-height: 500px;
   height: fit-content;
-  width: calc(100% - 86px) !important;
-
-  left: 86px;
+  width: 100%;
   padding: 15px;
   padding-top: 98px;
-
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -198,12 +186,29 @@ body {
   gap: 10px;
 }
 
+.overlay {
+  position: absolute;
+  background: #3339;
+  backdrop-filter: blur(6px);
+  width: 100vw;
+  height: 100vh;
+  padding: 25px;
+  left: 0%;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: left 0.75s cubic-bezier(0.74, 0.1, 0.27, 0.83);
+}
+
 /* -- > Sections CSS */
 
 .section {
   width: 100%;
-  background-color: var(--colMed);
-  border: 3px solid var(--colSemiDark);
+  background-color: var(--col4);
+  border: 3px solid var(--col5);
   border-radius: 15px;
   padding: 10px;
 }
@@ -238,16 +243,15 @@ body {
 .title {
   position: fixed;
   top: 0px;
-  left: 86px;
-  width: calc(100vw - 86px);
+  width: 100vw;
   font-size: 50px;
-  color: var(--colNorm);
-  background: var(--colMed);
+  color: var(--col1);
+  background: var(--col4);
   border-bottom: 3px solid var(--colTheme);
   padding: 10px;
   padding-left: 20px;
   overflow: clip;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   height: 82px;
 }
 
@@ -257,7 +261,7 @@ body {
   border-bottom: 2px solid var(--colTheme);
   padding-bottom: 2px;
   font-size: 25px;
-  color: var(--colNorm);
+  color: var(--col1);
   margin-bottom: 10px;
   width: 100%;
   user-select: none;
@@ -266,7 +270,7 @@ body {
 .sectionSubTitle {
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
-  color: var(--colNorm);
+  color: var(--col1);
   margin-bottom: 5px;
   width: auto;
   user-select: none;
@@ -275,7 +279,7 @@ body {
 .sectionPara {
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
-  color: var(--colDimmed);
+  color: var(--col2);
   margin-bottom: 5px;
   margin-left: 5px;
   width: auto;
@@ -285,7 +289,7 @@ body {
 .sectionSubInfo {
   font-family: 'Roboto', sans-serif;
   font-size: 15px;
-  color: var(--colDimmed);
+  color: var(--col2);
   margin-left: 5px;
   width: auto;
   user-select: none;
@@ -297,11 +301,11 @@ body {
   display: inline-block;
   width: -webkit-fill-available;
   height: fit-content;
-  background: var(--colSemiDark);
+  background: var(--col5);
   
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
-  color: var(--colNorm);
+  color: var(--col1);
   
   border-radius: 20px;
   border: 2px solid var(--colTheme);
@@ -314,11 +318,11 @@ body {
   display: inline-block;
   width: -webkit-fill-available;
   height: fit-content;
-  background: var(--colLight);
+  background: var(--col3);
 
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
-  color: var(--colNorm);
+  color: var(--col1);
 
   border-radius: 50px;
   border: 2px solid var(--colTheme);
@@ -330,11 +334,11 @@ body {
 .sectionPillIconButton {
   display: inline-block;
   height: 49px;
-  background: var(--colLight);
+  background: var(--col3);
   
   font-family: 'Roboto', sans-serif;
   font-size: 25px;
-  color: var(--colNorm);
+  color: var(--col1);
   
   border-radius: 100px;
   border: 2px solid var(--colTheme);
@@ -359,18 +363,22 @@ body {
 
 .sectionButton {
   display: block;
-  width: -webkit-fill-available;
+  width: calc(100% - 20px);
   height: 45px;
-  background: var(--colSemiDark);
-  border: 3px solid var(--colDark);
-  border-radius: 50px;
-  margin: 5px;
+  color: var(--col1);
+  background: var(--col3);
+  border: 2px solid var(--colTheme);
+  border-radius: 15px;
+  margin: 10px;
+  padding: 5px;
+  font-size: 20px;
+  transition: border 0.25s ease-in-out;
 }
 
 .sectionTextBox {
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
-  color: var(--colNorm);
+  color: var(--col1);
   background: #555;
   border: none;
   border-radius: 5px;
@@ -406,7 +414,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--colLight);
+  background-color: var(--col3);
   border-radius: 5px;
   transition: 0.4s;
   border: none;
@@ -419,7 +427,7 @@ body {
   width: 27px;
   left: 4px;
   bottom: 4px;
-  background-color: var(--colNorm);
+  background-color: var(--col1);
   transition: 0.4s;
   border-radius: 50%;
 }
@@ -435,7 +443,7 @@ body {
 .sectionDateBox {
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
-  color: var(--colNorm);
+  color: var(--col1);
   background: #555;
   border: none;
   border-radius: 5px;
@@ -467,7 +475,7 @@ body {
 #listsEdit-titleButtonsDiv .sectionPillIconButton {  margin-bottom: 0;  }
 
 .listsPage-SmallIconButton {
-  color: var(--colNorm);
+  color: var(--col1);
   overflow: clip;
   float: left;
   padding-top: 3px;
@@ -549,14 +557,14 @@ body {
   font-family: 'Roboto', sans-serif;
   font-weight: bolder;
   font-size: 20px;
-  color: var(--colNorm);
+  color: var(--col1);
   margin: 5px;
 }
 
 .notesPara {
   font-family: 'Roboto', sans-serif;
   font-size: 15px;
-  color: var(--colNorm);
+  color: var(--col1);
   margin: 10px;
   white-space: pre-line;
 }
@@ -568,7 +576,7 @@ body {
 }
 
 .notesButton {
-  color: var(--colNorm);
+  color: var(--col1);
   overflow: clip;
   float: right;
   margin-right: 5px;
@@ -577,7 +585,7 @@ body {
 
 .notesTextBox {
   font-size: 20px;
-  color: var(--colNorm);
+  color: var(--col1);
   background: #555;
   border: none;
   border-radius: 5px;
