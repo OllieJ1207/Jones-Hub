@@ -161,13 +161,13 @@ async function setNavbar() {
 
 
 
-document.documentElement.requestFullscreen().then(() => {
-  if (screen.orientation && screen.orientation.lock) {
-    screen.orientation.lock("portrait").catch(function (error) {
-      console.warn("Orientation lock failed:", error);
-    });
-  }
-});
+// document.documentElement.requestFullscreen().then(() => {
+//   if (screen.orientation && screen.orientation.lock) {
+//     screen.orientation.lock("portrait").catch(function (error) {
+//       console.warn("Orientation lock failed:", error);
+//     });
+//   }
+// });
 
 
 
