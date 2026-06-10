@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   // -- > Load the home page
   if (window.location.href.endsWith("/")) {
     await LoadPage_HomePage_LoadEvents()
-  } else if (window.location.href.endsWith("/listsPage")) {
+  } else if (window.location.href.endsWith("/listsPage.html")) {
     await LoadPage_ListsPage_LoadLists()
   } else if (window.location.href.endsWith("/settingsPage")) {
     if (localStorage.getItem("deviceUser") != null) {
