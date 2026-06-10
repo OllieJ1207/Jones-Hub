@@ -179,7 +179,7 @@ document.documentElement.requestFullscreen().then(() => {
 
 document.addEventListener("DOMContentLoaded", async function (event) {
 
-  setNavbar()
+  // setNavbar()
 
   // -- > Hide disabled navbar buttons.
   document.querySelectorAll('.navbarButton').forEach(button => {
@@ -490,7 +490,9 @@ async function LoadPage_Meals() {
 
 
 
-if (window.location.href.endsWith("/listsPage")) {
+if (window.location.href.contains("/listsPage.html")) {
+
+  console.log("testing")
 
   // -- > Lists Page > Items Page >  Switch Delete
   
