@@ -490,7 +490,7 @@ async function LoadPage_Meals() {
 
 
 
-if (window.location.href.contains("/listsPage.html")) {
+if (window.location.href.endsWith("/listsPage.html")) {
 
   console.log("testing")
 
